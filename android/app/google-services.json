@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "514268542370",
+    "project_id": "infant-physiotherapy",
+    "storage_bucket": "infant-physiotherapy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514268542370:android:7c5fef4cf8ab9ad1c6aefb",
+        "android_client_info": {
+          "package_name": "com.example.physiotherapy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA81b5NxLyPKSmZevQHFpuRRHT2CUaACuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
