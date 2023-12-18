@@ -1,18 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/auth/login_page.dart';
 import 'package:physiotherapy/auth/otp_screen.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  bool isDoctor;
+  RegisterPage({super.key, required this.isDoctor});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  
   final mobilenoController = TextEditingController();
   final otpController = TextEditingController();
+  var phone = '';
+  String countrycode = '+91';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,8 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                       padding: const EdgeInsets.all(30),
                       child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
+                        child: Column(children: <Widget>[
                           const Text(
                             'Sign Up',
                             textAlign: TextAlign.center,
@@ -74,26 +76,27 @@ class _RegisterPageState extends State<RegisterPage> {
                           Container(
                             width: 275,
                             child: const Text(
-                                    "Please Enter Your 10 - Digit Mobile Number To Recieve OTP",
-                                    textAlign: TextAlign.center ,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18,
-                                      height: 0,
-                                    ),
-                                  ),
+                              "Please Enter Your 10 - Digit Mobile Number To Recieve OTP",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                height: 0,
+                              ),
+                            ),
                           ),
                           const SizedBox(
                             height: 40,
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextField(
                               keyboardType: TextInputType.phone,
                               onChanged: (value) {
-                                String phone = value;
+                                phone = value;
                               },
                               controller: mobilenoController,
                               obscureText: false, //hide password
@@ -103,8 +106,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                     color: Colors.grey.shade600,
                                   ),
                                   enabledBorder: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                                      borderSide: BorderSide(color: Color(0xFF4C4C4C))),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      borderSide:
+                                          BorderSide(color: Color(0xFF4C4C4C))),
                                   focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
                                     color: Colors.grey.shade600,
@@ -112,7 +117,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   fillColor: Colors.grey.shade200,
                                   filled: true,
                                   hintText: "Mobile Number",
-                                  hintStyle: const TextStyle(color: Color.fromARGB(90, 0, 0, 0))
+                                  hintStyle: const TextStyle(
+                                      color: Color.fromARGB(90, 0, 0, 0))
                                   //to hint what is written in text field
                                   ),
                             ),
@@ -120,13 +126,23 @@ class _RegisterPageState extends State<RegisterPage> {
                           const SizedBox(
                             height: 60,
                           ),
-                         
                           ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MyVerify()),
+                              onPressed: () async {
+                                await FirebaseAuth.instance.verifyPhoneNumber(
+                                  phoneNumber: '${phone}',
+                                  verificationCompleted:
+                                      (PhoneAuthCredential credential) {},
+                                  verificationFailed:
+                                      (FirebaseAuthException e) {},
+                                  codeSent: (String verificationId,
+                                      int? resendToken) {
+                                    LoginPage.verify = verificationId;
+                                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                                      return MyVerify(isSignUp: true, isDoctor: widget.isDoctor,);
+                                      }));
+                                  },
+                                  codeAutoRetrievalTimeout:
+                                      (String verificationId) {},
                                 );
                               },
                               style: ElevatedButton.styleFrom(
@@ -152,7 +168,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.push(context,MaterialPageRoute(builder: (context) => const LoginPage()),
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage(
+                                              isDoctor: widget.isDoctor,
+                                            )),
                                   );
                                 },
                                 child: const Text(

@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/auth/login_page.dart';
 import 'package:pinput/pinput.dart';
-import 'package:otp_autofill/otp_autofill.dart';
 
 class MyVerify extends StatefulWidget {
-  const MyVerify({Key? key}) : super(key: key);
+  final bool isSignUp;
+  bool isDoctor;
+  MyVerify({Key? key, required this.isSignUp, required this.isDoctor})
+      : super(key: key);
 
   @override
   State<MyVerify> createState() => _MyVerifyState();
@@ -14,11 +16,7 @@ class MyVerify extends StatefulWidget {
 class _MyVerifyState extends State<MyVerify> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   @override
-  
-
-  
   @override
- 
   Widget build(BuildContext context) {
     String countrycode = '+91';
     final defaultPinTheme = PinTheme(
@@ -114,9 +112,33 @@ class _MyVerifyState extends State<MyVerify> {
                                       PhoneAuthProvider.credential(
                                           verificationId: LoginPage.verify,
                                           smsCode: code);
-
-                                  await auth.signInWithCredential(credential);
-                                  Navigator.pushNamedAndRemoveUntil(context, 'home',(route)=>false);
+                                  if (widget.isSignUp) {
+                                    if (widget.isDoctor) {
+                                      await auth
+                                          .signInWithCredential(credential);
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          'd_details', (route) => false);
+                                    } else {
+                                      await auth
+                                          .signInWithCredential(credential);
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          'm_details', (route) => false);
+                                    }
+                                  } else {
+                                    if (widget.isDoctor) {
+                                      await auth
+                                          .signInWithCredential(credential);
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          'd_initial', (route) => false);
+                                    } else {
+                                      await auth
+                                          .signInWithCredential(credential);
+                                      // ignore: use_build_context_synchronously
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          'm_initial', (route) => false);
+                                    }
+                                    // ignore: empty_catches
+                                  }
                                 } catch (e) {}
                                 ;
                               },

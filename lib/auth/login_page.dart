@@ -4,7 +4,8 @@ import 'package:physiotherapy/auth/otp_screen.dart';
 import 'package:physiotherapy/auth/register_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  bool isDoctor;
+  LoginPage({super.key, required this.isDoctor});
 
   static String verify = '';
 
@@ -131,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                           ElevatedButton(
                               onPressed: () async {
                                 await FirebaseAuth.instance.verifyPhoneNumber(
-                                  phoneNumber: '${phone}',
+                                  phoneNumber: countrycode+mobilenoController.text,
                                   verificationCompleted:
                                       (PhoneAuthCredential credential) {},
                                   verificationFailed:
@@ -139,7 +140,13 @@ class _LoginPageState extends State<LoginPage> {
                                   codeSent: (String verificationId,
                                       int? resendToken) {
                                     LoginPage.verify = verificationId;
-                                    Navigator.pushNamed(context, 'otp');
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return MyVerify(
+                                        isSignUp: false,
+                                        isDoctor: widget.isDoctor,
+                                      );
+                                    }));
                                   },
                                   codeAutoRetrievalTimeout:
                                       (String verificationId) {},
@@ -171,8 +178,9 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RegisterPage()),
+                                        builder: (context) => RegisterPage(
+                                              isDoctor: widget.isDoctor,
+                                            )),
                                   );
                                 },
                                 child: const Text(
