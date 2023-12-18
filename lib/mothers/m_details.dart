@@ -17,7 +17,7 @@ class _MotherDetailEnquiryState extends State<MotherDetailEnquiry> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('MOTHER DETAILS PAGE'),
+          const Text('MOTHER DETAILS PAGE'),
           ElevatedButton(
                 onPressed: () {
                   Navigator.push(

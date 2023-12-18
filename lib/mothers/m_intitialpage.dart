@@ -11,13 +11,13 @@ class _MotherInitialPageState extends State<MotherInitialPage> {
 
   
 
-  @override
   int _currentIndex = 0;
 
   List <Widget> tabs =  <Widget> [
-    MotherHomePage()
+    const MotherHomePage()
   ];
 
+  @override
   Widget build(BuildContext context) {
 
     return 

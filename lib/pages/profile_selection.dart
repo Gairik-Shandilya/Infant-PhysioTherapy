@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:physiotherapy/auth/login_page.dart';
 import 'package:physiotherapy/auth/register_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ProfileSelection(),
     );
   }
@@ -17,6 +19,8 @@ class MyApp extends StatelessWidget {
 
 class ProfileSelection extends StatefulWidget 
 {
+  const ProfileSelection({super.key});
+
   @override
   State<ProfileSelection> createState() => _ProfileSelectionState();
 }
@@ -54,7 +58,7 @@ class _ProfileSelectionState extends State<ProfileSelection> {
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: ((context) {
-                    return RegisterPage(isDoctor: false,);
+                    return const RegisterPage(isDoctor: false,);
                   })));
                 },
                 child: Padding(
@@ -91,7 +95,7 @@ class _ProfileSelectionState extends State<ProfileSelection> {
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: ((context) {
-                    return RegisterPage(isDoctor: true,);
+                    return const RegisterPage(isDoctor: true,);
                   })));
                 },
                 child: Padding(

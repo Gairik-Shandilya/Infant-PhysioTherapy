@@ -4,8 +4,8 @@ import 'package:physiotherapy/auth/login_page.dart';
 import 'package:physiotherapy/auth/otp_screen.dart';
 
 class RegisterPage extends StatefulWidget {
-  bool isDoctor;
-  RegisterPage({super.key, required this.isDoctor});
+  final bool isDoctor;
+  const RegisterPage({super.key, required this.isDoctor});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -73,9 +73,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           const SizedBox(
                             height: 50,
                           ),
-                          Container(
+                          const SizedBox(
                             width: 275,
-                            child: const Text(
+                            child:  Text(
                               "Please Enter Your 10 - Digit Mobile Number To Recieve OTP",
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -129,7 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ElevatedButton(
                               onPressed: () async {
                                 await FirebaseAuth.instance.verifyPhoneNumber(
-                                  phoneNumber: '${phone}',
+                                  phoneNumber: countrycode+mobilenoController.text,
                                   verificationCompleted:
                                       (PhoneAuthCredential credential) {},
                                   verificationFailed:

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MotherHomePage extends StatefulWidget {
-  const MotherHomePage({super.key});
+class DoctorHomePage extends StatefulWidget {
+  const DoctorHomePage({super.key});
 
   @override
-  State<MotherHomePage> createState() => _MotherHomePageState();
+  State<DoctorHomePage> createState() => _DoctorHomePageState();
 }
 
-class _MotherHomePageState extends State<MotherHomePage> {
+class _DoctorHomePageState extends State<DoctorHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +15,7 @@ class _MotherHomePageState extends State<MotherHomePage> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: const [
-          Text('MOTHER HOME PAGE')],
+          Text('DOCTOR HOME PAGE')],
       )),
     );
   }

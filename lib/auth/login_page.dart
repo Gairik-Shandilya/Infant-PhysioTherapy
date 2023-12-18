@@ -4,8 +4,8 @@ import 'package:physiotherapy/auth/otp_screen.dart';
 import 'package:physiotherapy/auth/register_page.dart';
 
 class LoginPage extends StatefulWidget {
-  bool isDoctor;
-  LoginPage({super.key, required this.isDoctor});
+  final bool isDoctor;
+  const LoginPage({super.key, required this.isDoctor});
 
   static String verify = '';
 
@@ -15,8 +15,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final mobilenoController = TextEditingController();
+
   final otpController = TextEditingController();
+
   var phone = '';
+
   String countrycode = '+91';
 
   @override
@@ -76,9 +79,9 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(
                             height: 50,
                           ),
-                          Container(
+                          const SizedBox(
                             width: 275,
-                            child: const Text(
+                            child:  Text(
                               "Please Enter Your 10 - Digit Mobile Number To Recieve OTP",
                               textAlign: TextAlign.center,
                               style: TextStyle(

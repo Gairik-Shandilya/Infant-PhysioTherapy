@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:physiotherapy/mothers/m_homepage.dart';
+import 'package:physiotherapy/doctors/d_homepage.dart';
 
 class DoctorInitialPage extends StatefulWidget {
   const DoctorInitialPage({super.key});
@@ -9,13 +9,13 @@ class DoctorInitialPage extends StatefulWidget {
 }
 
 class _DoctorInitialPageState extends State<DoctorInitialPage> {
-  @override
   int _currentIndex = 0;
 
   List <Widget> tabs =  <Widget> [
-    MotherHomePage()
+    const DoctorHomePage()
   ];
 
+  @override
   Widget build(BuildContext context) {
 
     return 

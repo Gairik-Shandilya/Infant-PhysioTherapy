@@ -17,7 +17,7 @@ class _DoctorDetailEnquiryState extends State<DoctorDetailEnquiry> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('DOCTOR DETAILS PAGE'),
+          const Text('DOCTOR DETAILS PAGE'),
           ElevatedButton(
                 onPressed: () {
                   Navigator.push(
