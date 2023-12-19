@@ -75,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           const SizedBox(
                             width: 275,
-                            child:  Text(
+                            child: Text(
                               "Please Enter Your 10 - Digit Mobile Number To Recieve OTP",
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -129,7 +129,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           ElevatedButton(
                               onPressed: () async {
                                 await FirebaseAuth.instance.verifyPhoneNumber(
-                                  phoneNumber: countrycode+mobilenoController.text,
+                                  phoneNumber:
+                                      countrycode + mobilenoController.text,
                                   verificationCompleted:
                                       (PhoneAuthCredential credential) {},
                                   verificationFailed:
@@ -137,9 +138,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                   codeSent: (String verificationId,
                                       int? resendToken) {
                                     LoginPage.verify = verificationId;
-                                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                                      return MyVerify(isSignUp: true, isDoctor: widget.isDoctor,);
-                                      }));
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      String phoneno =
+                                          countrycode + mobilenoController.text;
+                                      return MyVerify(
+                                        isSignUp: true,
+                                        isDoctor: widget.isDoctor,
+                                        phonenumber: phoneno,
+                                      );
+                                    }));
                                   },
                                   codeAutoRetrievalTimeout:
                                       (String verificationId) {},

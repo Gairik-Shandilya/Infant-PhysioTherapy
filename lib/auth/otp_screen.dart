@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/auth/login_page.dart';
+import 'package:physiotherapy/doctors/d_details.dart';
+import 'package:physiotherapy/mothers/m_details.dart';
 import 'package:pinput/pinput.dart';
 
 class MyVerify extends StatefulWidget {
   final bool isSignUp;
   final bool isDoctor;
-  const MyVerify({Key? key, required this.isSignUp, required this.isDoctor})
+  final String phonenumber;
+  const MyVerify({Key? key, required this.isSignUp, required this.isDoctor, required this.phonenumber})
       : super(key: key);
 
   @override
@@ -117,14 +120,18 @@ class _MyVerifyState extends State<MyVerify> {
                                       await auth
                                           .signInWithCredential(credential);
                                       // ignore: use_build_context_synchronously
-                                      Navigator.pushNamedAndRemoveUntil(context,
-                                          'd_details', (route) => false);
+                                      Navigator.pushAndRemoveUntil(context,
+                                          MaterialPageRoute(builder: ((context) {
+                                            return DoctorDetailEnquiry(phone: widget.phonenumber);
+                                          })), (route) => false);
                                     } else {
                                       await auth
                                           .signInWithCredential(credential);
                                       // ignore: use_build_context_synchronously
-                                      Navigator.pushNamedAndRemoveUntil(context,
-                                          'm_details', (route) => false);
+                                      Navigator.pushAndRemoveUntil(context,
+                                          MaterialPageRoute(builder: ((context) {
+                                            return MotherDetailEnquiry(phone: widget.phonenumber);
+                                          })), (route) => false);
                                     }
                                   } else {
                                     if (widget.isDoctor) {

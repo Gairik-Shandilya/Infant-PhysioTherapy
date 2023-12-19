@@ -40,6 +40,7 @@ dependencies:
   pinput: ^3.0.1
   sms_otp_auto_verify: ^2.1.0
   otp_autofill: ^3.0.0
+  cloud_firestore: ^4.12.1
 
 dev_dependencies:
   flutter_test:

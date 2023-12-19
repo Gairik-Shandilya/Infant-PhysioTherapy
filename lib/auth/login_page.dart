@@ -146,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
                                       return MyVerify(
+                                        phonenumber: countrycode+mobilenoController.text,
                                         isSignUp: false,
                                         isDoctor: widget.isDoctor,
                                       );
