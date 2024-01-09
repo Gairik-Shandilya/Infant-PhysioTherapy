@@ -118,6 +118,7 @@
 //   }
 // }
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/components/mytextfield.dart';
 import 'package:physiotherapy/doctors/d_initialpage.dart';
@@ -139,6 +140,7 @@ class _DoctorDetailEnquiryState extends State<DoctorDetailEnquiry> {
   final Degree = TextEditingController();
   final EmailAddress = TextEditingController();
   final Institute = TextEditingController();
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   void dispose() {
     Name.dispose();
@@ -161,8 +163,9 @@ class _DoctorDetailEnquiryState extends State<DoctorDetailEnquiry> {
     String degree,
     String emailAddress,
     String institute,
+    String mobilenumber,
   ) async {
-    await FirebaseFirestore.instance.collection('Doctors').doc(widget.phone).set({
+    await FirebaseFirestore.instance.collection('Doctors').doc(user!.uid).set({
       'Name': name,
       'Gender': gender,
       'Age': age,
@@ -171,9 +174,9 @@ class _DoctorDetailEnquiryState extends State<DoctorDetailEnquiry> {
       'Degree': degree,
       'EmailAddress': emailAddress,
       'Institute': institute,
+      'MobileNumber' : mobilenumber,
     });
   }
-
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -254,7 +257,9 @@ class _DoctorDetailEnquiryState extends State<DoctorDetailEnquiry> {
                         Experience.text.trim(),
                         Degree.text.trim(),
                         EmailAddress.text.trim(),
-                        Institute.text.trim());
+                        Institute.text.trim(),
+                        widget.phone,
+                        );
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

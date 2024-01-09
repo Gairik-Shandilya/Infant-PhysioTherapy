@@ -38,9 +38,10 @@ dependencies:
   firebase_auth: ^4.15.3
   firebase_core: ^2.24.2
   pinput: ^3.0.1
-  sms_otp_auto_verify: ^2.1.0
-  otp_autofill: ^3.0.0
   cloud_firestore: ^4.12.1
+  firebase_storage: ^11.5.6
+  image_picker: ^1.0.4
+  image_cropper: ^4.0.1
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,7 @@ flutter:
     - assets/College.jpg
     - assets/mothersvg.png
     - assets/therapistsvg.png
+    - assets/patient2.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

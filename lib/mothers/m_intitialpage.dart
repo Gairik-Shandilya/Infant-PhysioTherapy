@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:physiotherapy/mothers/m_checklist.dart';
+import 'package:physiotherapy/mothers/m_doctorlist.dart';
+import 'package:physiotherapy/mothers/m_history.dart';
 import 'package:physiotherapy/mothers/m_homepage.dart';
+import 'package:physiotherapy/mothers/m_profile.dart';
 class MotherInitialPage extends StatefulWidget {
   const MotherInitialPage({super.key});
 
@@ -14,7 +18,11 @@ class _MotherInitialPageState extends State<MotherInitialPage> {
   int _currentIndex = 0;
 
   List <Widget> tabs =  <Widget> [
-    const MotherHomePage()
+    const MotherHomePage(),
+    const Doctorlist(),
+    const MotherChecklist(),
+    const MotherHistory(),
+    const MotherProfile()
   ];
 
   @override
@@ -24,8 +32,8 @@ class _MotherInitialPageState extends State<MotherInitialPage> {
     SafeArea(
       child: Scaffold(
         
-    
-        body: tabs[_currentIndex],
+      
+        body: SafeArea(child: tabs[_currentIndex]),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _currentIndex,

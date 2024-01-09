@@ -18,7 +18,7 @@ class MyVerify extends StatefulWidget {
 
 class _MyVerifyState extends State<MyVerify> {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  @override
+  
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
@@ -119,7 +119,6 @@ class _MyVerifyState extends State<MyVerify> {
                                     if (widget.isDoctor) {
                                       await auth
                                           .signInWithCredential(credential);
-                                      // ignore: use_build_context_synchronously
                                       Navigator.pushAndRemoveUntil(context,
                                           MaterialPageRoute(builder: ((context) {
                                             return DoctorDetailEnquiry(phone: widget.phonenumber);
@@ -127,7 +126,6 @@ class _MyVerifyState extends State<MyVerify> {
                                     } else {
                                       await auth
                                           .signInWithCredential(credential);
-                                      // ignore: use_build_context_synchronously
                                       Navigator.pushAndRemoveUntil(context,
                                           MaterialPageRoute(builder: ((context) {
                                             return MotherDetailEnquiry(phone: widget.phonenumber);
@@ -137,13 +135,11 @@ class _MyVerifyState extends State<MyVerify> {
                                     if (widget.isDoctor) {
                                       await auth
                                           .signInWithCredential(credential);
-                                      // ignore: use_build_context_synchronously
                                       Navigator.pushNamedAndRemoveUntil(context,
                                           'd_initial', (route) => false);
                                     } else {
                                       await auth
                                           .signInWithCredential(credential);
-                                      // ignore: use_build_context_synchronously
                                       Navigator.pushNamedAndRemoveUntil(context,
                                           'm_initial', (route) => false);
                                     }

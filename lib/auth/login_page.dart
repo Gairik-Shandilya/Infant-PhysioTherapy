@@ -140,17 +140,21 @@ class _LoginPageState extends State<LoginPage> {
                                       (PhoneAuthCredential credential) {},
                                   verificationFailed:
                                       (FirebaseAuthException e) {},
+                                      
                                   codeSent: (String verificationId,
                                       int? resendToken) {
                                     LoginPage.verify = verificationId;
-                                    Navigator.push(context,
+                                      Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
                                       return MyVerify(
                                         phonenumber: countrycode+mobilenoController.text,
                                         isSignUp: false,
                                         isDoctor: widget.isDoctor,
                                       );
-                                    }));
+                                    },
+                                    ));
+                                    
+                                    
                                   },
                                   codeAutoRetrievalTimeout:
                                       (String verificationId) {},

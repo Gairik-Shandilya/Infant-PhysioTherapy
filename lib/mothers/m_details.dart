@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/components/mytextfield.dart';
 import 'package:physiotherapy/doctors/d_initialpage.dart';
+import 'package:physiotherapy/mothers/m_intitialpage.dart';
 
 class MotherDetailEnquiry extends StatefulWidget {
   String phone;
@@ -20,6 +22,7 @@ class _MotherDetailEnquiryState extends State<MotherDetailEnquiry> {
   final Address = TextEditingController();
   final AdhaarNumber = TextEditingController();
   final EmailAddress = TextEditingController();
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   void dispose() {
     InfantName.dispose();
@@ -41,10 +44,12 @@ class _MotherDetailEnquiryState extends State<MotherDetailEnquiry> {
       String gender,
       String address,
       String adhaarNumber,
-      String emailAddress) async {
+      String emailAddress,
+      String mobilenumber
+      ) async {
     await FirebaseFirestore.instance
         .collection('Mothers')
-        .doc(widget.phone)
+        .doc(user!.uid)
         .set({
       'InfantName': infantName,
       'FatherName': fatherName,
@@ -54,9 +59,11 @@ class _MotherDetailEnquiryState extends State<MotherDetailEnquiry> {
       'Address': address,
       'AdhaarNumber': adhaarNumber,
       'EmailAddress': emailAddress,
+      'MobileNumber': mobilenumber,
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -143,11 +150,14 @@ class _MotherDetailEnquiryState extends State<MotherDetailEnquiry> {
                         Address.text.trim(),
                         AdhaarNumber.text.trim(),
                         EmailAddress.text.trim(),
+                        widget.phone
                         );
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DoctorInitialPage()),
+                        builder: ((context) {
+                          return const MotherInitialPage();
+                      })), (route) => false
                     );
                   },
                   style: ElevatedButton.styleFrom(
