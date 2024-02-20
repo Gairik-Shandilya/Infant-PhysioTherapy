@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:physiotherapy/doctors/d_homepage.dart';
 import 'package:physiotherapy/doctors/d_motherlist.dart';
 import 'package:physiotherapy/doctors/d_profile.dart';
+import 'package:physiotherapy/models/checklist.dart';
 import 'package:physiotherapy/mothers/m_checklist.dart';
 
 class DoctorInitialPage extends StatefulWidget {
@@ -15,9 +16,9 @@ class _DoctorInitialPageState extends State<DoctorInitialPage> {
   int _currentIndex = 0;
 
   List <Widget> tabs =  <Widget> [
-    const DoctorHomePage(),
-    DoctorHomePage(),
+    DoctorArticleScreen(),
     Motherlist(),
+    DoctorChecklistPage(),
     MotherChecklist(),
     DoctorProfile()
 
@@ -42,7 +43,7 @@ class _DoctorInitialPageState extends State<DoctorInitialPage> {
                 backgroundColor: Colors.black),
             BottomNavigationBarItem(
                 icon: Icon(Icons.local_hospital),
-                label: 'Doctors',
+                label: 'Patients',
                 backgroundColor: Colors.black),
             BottomNavigationBarItem(
                 icon: Icon(Icons.message_rounded),

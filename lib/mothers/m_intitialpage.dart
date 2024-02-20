@@ -48,7 +48,7 @@ class _MotherInitialPageState extends State<MotherInitialPage> {
                 backgroundColor: Colors.black),
             BottomNavigationBarItem(
                 icon: Icon(Icons.message_rounded),
-                label: 'Consultation',
+                label: 'Checklist',
                 backgroundColor: Colors.black),
             BottomNavigationBarItem(
                 icon: Icon(Icons.history_edu_sharp),

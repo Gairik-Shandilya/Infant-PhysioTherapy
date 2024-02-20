@@ -1,22 +1,97 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:physiotherapy/components/articleList.dart';
+import 'package:physiotherapy/doctors/d_writearticle.dart';
+import 'package:physiotherapy/firestore_services.dart/m_services.dart';
 
-class DoctorHomePage extends StatefulWidget {
-  const DoctorHomePage({super.key});
+class Article {
+  final String title;
+  final String content;
 
-  @override
-  State<DoctorHomePage> createState() => _DoctorHomePageState();
+  Article({required this.title, required this.content});
 }
 
-class _DoctorHomePageState extends State<DoctorHomePage> {
+class DoctorArticleScreen extends StatelessWidget {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? user = FirebaseAuth.instance.currentUser;
+  final TextEditingController searchbarcontroller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: const [
-          Text('DOCTOR HOME PAGE')],
-      )),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            const Text("Hello 👋",
+                style: TextStyle(
+                    fontFamily: 'Pacificio',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20)),
+            Text(doctorUserName,
+                style: const TextStyle(
+                    fontFamily: 'Pacificio',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30)),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Articles',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF4A545E),
+                    fontSize: 20,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                IconButton(onPressed: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => WriteArticle()),
+                    );
+                }, icon: Icon(Icons.edit))
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextField(
+              controller: searchbarcontroller,
+              decoration: InputDecoration(
+                  suffixText: 'Search',
+                  prefixIcon: const Icon(Icons.search),
+                  enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      )),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                    color: Colors.grey.shade400,
+                  )),
+                  fillColor: Colors.grey.shade200,
+                  filled: true,
+                  hintText: 'Search for Articles',
+                  hintStyle: TextStyle(color: Colors.grey[500])),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ArticleList(),
+            
+            
+          ],
+        ),
+      ),
     );
   }
 }
