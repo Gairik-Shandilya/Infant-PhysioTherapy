@@ -24,7 +24,11 @@ class ChecklistItem {
 }
 
 class DoctorChecklistPage extends StatelessWidget {
+  String month = '1';
+  DoctorChecklistPage({super.key, required this.month});
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final TextEditingController _addItemController = TextEditingController();
 
   Future<void> _addItem() async {
@@ -33,7 +37,11 @@ class DoctorChecklistPage extends StatelessWidget {
     if (user != null) {
       String userId = user.uid;
 
-      await FirebaseFirestore.instance.collection('checklist').add({
+      await FirebaseFirestore.instance
+          .collection('checklist')
+          .doc(month)
+          .collection('questions')
+          .add({
         'doctorId': userId,
         'text': _addItemController.text,
         'completed': false,
@@ -46,21 +54,24 @@ class DoctorChecklistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Column(
         children: [
-          SizedBox(height: 20,),
-        Text(
-                  'Doctor Checklist',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF4A545E),
-                    fontSize: 20,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-        SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Doctor Checklist',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0xFF4A545E),
+              fontSize: 20,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -80,48 +91,6 @@ class DoctorChecklistPage extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('checklist')
-                  .snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Center(child: Text('Something went wrong'));
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                if (snapshot.data == null ||
-                    snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('No checklist items found'));
-                }
-
-                return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    ChecklistItem item =
-                        ChecklistItem.fromSnapshot(snapshot.data!.docs[index]);
-
-                    return ListTile(
-                      title: Text(item.text),
-                      trailing: Checkbox(
-                        value: item.completed,
-                        onChanged: (value) {
-                          FirebaseFirestore.instance
-                              .collection('checklist')
-                              .doc(item.id)
-                              .update({'completed': value});
-                        },
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
         ],
       ),
     );
@@ -129,64 +98,78 @@ class DoctorChecklistPage extends StatelessWidget {
 }
 
 class MotherChecklistPage extends StatelessWidget {
+  String month = '1';
+  MotherChecklistPage({super.key, required this.month});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('checklist').snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Something went wrong'));
-          }
+      stream: FirebaseFirestore.instance
+          .collection('checklist')
+          .doc(month)
+          .collection('questions')
+          .snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Something went wrong'));
+        }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          print(month);
+          return Center(child: CircularProgressIndicator());
+        }
 
-          if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No checklist items found'));
-          }
+        if (!snapshot.hasData && snapshot.data!.docs.isEmpty) {
+          print(snapshot.data);
+          return Center(child: Text('No checklist items found'));
+        }
 
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              ChecklistItem item =
-                  ChecklistItem.fromSnapshot(snapshot.data!.docs[index]);
+        return ListView.builder(
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (context, index) {
+            DocumentSnapshot questionDoc = snapshot.data!.docs[index];
+            // Access the 'text' field from the question document
+            String questionText = questionDoc['text'];
+            ChecklistItem item =
+                ChecklistItem.fromSnapshot(snapshot.data!.docs[index]);
 
-              return ListTile(
-  title: Text(item.text),
-  trailing: Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Checkbox(
-        value: item.completed,
-        onChanged: (value) {
-          // Update the Firestore document when the checkbox is changed
-          FirebaseFirestore.instance
-              .collection('checklist')
-              .doc(item.id)
-              .update({'completed': value});
-        },
-      ),
-      IconButton(
-        icon: item.completed ? Icon(Icons.clear) : Icon(Icons.check),
-        onPressed: () {
-          // Update the Firestore document to mark as incomplete (false) or complete (true)
-          FirebaseFirestore.instance
-              .collection('checklist')
-              .doc(item.id)
-              .update({'completed': !item.completed});
-        },
-      ),
-    ],
-  ),
-);
-
-
-            },
-          );
-        },
-      
+            return ListTile(
+              title: Text(questionText),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Checkbox(
+                    value: item.completed,
+                    onChanged: (value) {
+                      
+                      // Update the Firestore document when the checkbox is changed
+                      FirebaseFirestore.instance
+                          .collection('checklist')
+                          .doc(month)
+                          .collection('questions')
+                          .doc(item.id)
+                          .update({'completed': value});
+                    },
+                  ),
+                  IconButton(
+                    icon:
+                        item.completed ? Icon(Icons.clear) : Icon(Icons.check),
+                    onPressed: () {
+                      // Update the Firestore document to mark as incomplete (false) or complete (true)
+                      FirebaseFirestore.instance
+                          .collection('checklist')
+                          .doc(month)
+                          .collection('questions')
+                          .doc(item.id)
+                          .update({'completed': !item.completed});
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
-

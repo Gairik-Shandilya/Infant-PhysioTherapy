@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:physiotherapy/doctors/d_checklist.dart';
 import 'package:physiotherapy/doctors/d_homepage.dart';
 import 'package:physiotherapy/doctors/d_motherlist.dart';
 import 'package:physiotherapy/doctors/d_profile.dart';
@@ -18,7 +19,7 @@ class _DoctorInitialPageState extends State<DoctorInitialPage> {
   List <Widget> tabs =  <Widget> [
     DoctorArticleScreen(),
     Motherlist(),
-    DoctorChecklistPage(),
+    DoctorChecklist(),
     MotherChecklist(),
     DoctorProfile()
 
