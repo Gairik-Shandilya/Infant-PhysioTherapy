@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:physiotherapy/firestore_services.dart/m_services.dart';
+import 'package:physiotherapy/mothers/m_editprofile.dart';
 import 'package:physiotherapy/pages/profile_selection.dart';
 
 class DoctorProfile extends StatefulWidget {
@@ -48,30 +49,29 @@ class _DoctorProfileState extends State<DoctorProfile> {
       if (croppedImage != null) {
         setState(() {
           imagefile = croppedImage as File;
-          
         });
-      try {
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-    Reference storageReference =
-        FirebaseStorage.instance.ref().child('profile_images/$uid.jpg');
+        try {
+          String uid = FirebaseAuth.instance.currentUser!.uid;
+          Reference storageReference =
+              FirebaseStorage.instance.ref().child('profile_images/$uid.jpg');
 
-    // Upload the file to Cloud Storage
-    UploadTask uploadTask = storageReference.putFile(croppedImage);
+          // Upload the file to Cloud Storage
+          UploadTask uploadTask = storageReference.putFile(croppedImage);
 
-    // Get the download URL when the upload is complete
-    String downloadURL =
-        await (await uploadTask).ref.getDownloadURL();
+          // Get the download URL when the upload is complete
+          String downloadURL = await (await uploadTask).ref.getDownloadURL();
 
-    // Save the download URL to Firestore
-    await FirebaseFirestore.instance
-        .collection('Doctors') // Replace with your collection name
-        .doc(uid) // Replace with the document ID (typically the user's UID)
-        .update({'profileImageURL': downloadURL});
+          // Save the download URL to Firestore
+          await FirebaseFirestore.instance
+              .collection('Doctors') // Replace with your collection name
+              .doc(
+                  uid) // Replace with the document ID (typically the user's UID)
+              .update({'profileImageURL': downloadURL});
 
-    print('Profile image uploaded successfully!');
-  } catch (error) {
-    print('Error uploading profile image: $error');
-  }
+          print('Profile image uploaded successfully!');
+        } catch (error) {
+          print('Error uploading profile image: $error');
+        }
       }
     }
   }
@@ -107,12 +107,10 @@ class _DoctorProfileState extends State<DoctorProfile> {
         });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:const Color.fromRGBO(38, 47, 151, 1),
+      backgroundColor: const Color.fromRGBO(38, 47, 151, 1),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
         child: Center(
@@ -147,10 +145,16 @@ class _DoctorProfileState extends State<DoctorProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(double.infinity, 50), // Set the height ..as needed
+                      const Size(
+                          double.infinity, 50), // Set the height ..as needed
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DoctorProfilePage()));
+                  },
                   child: Row(
                     children: const [
                       Icon(
@@ -175,7 +179,8 @@ class _DoctorProfileState extends State<DoctorProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(double.infinity, 50), // Set the height as needed
+                      const Size(
+                          double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {},
