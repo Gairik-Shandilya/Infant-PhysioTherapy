@@ -110,7 +110,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(38, 47, 151, 1),
+      backgroundColor: const Color.fromARGB(255, 16, 89, 149),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
         child: Center(
