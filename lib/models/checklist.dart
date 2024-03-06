@@ -5,12 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 class ChecklistItem {
   String id;
   String text;
-  bool completed;
+  String choice;
 
   ChecklistItem({
     required this.id,
     required this.text,
-    required this.completed,
+    required this.choice,
   });
 
   factory ChecklistItem.fromSnapshot(DocumentSnapshot snapshot) {
@@ -18,7 +18,7 @@ class ChecklistItem {
     return ChecklistItem(
       id: snapshot.id,
       text: data['text'] ?? '',
-      completed: data['completed'] ?? false,
+      choice: data['choice'] ?? '',
     );
   }
 }
@@ -44,7 +44,7 @@ class DoctorChecklistPage extends StatelessWidget {
           .add({
         'doctorId': userId,
         'text': _addItemController.text,
-        'completed': false,
+        'choice': '',
       });
 
       _addItemController.clear();
@@ -133,36 +133,41 @@ class MotherChecklistPage extends StatelessWidget {
             ChecklistItem item =
                 ChecklistItem.fromSnapshot(snapshot.data!.docs[index]);
 
+            // Get the selected choice from the Firestore document
+            String? selectedChoice = questionDoc['choice'];
+
             return ListTile(
               title: Text(questionText),
-              trailing: Row(
+              subtitle: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Checkbox(
-                    value: item.completed,
-                    onChanged: (value) {
-                      
-                      // Update the Firestore document when the checkbox is changed
-                      FirebaseFirestore.instance
-                          .collection('checklist')
-                          .doc(month)
-                          .collection('questions')
-                          .doc(item.id)
-                          .update({'completed': value});
-                    },
-                  ),
-                  IconButton(
-                    icon:
-                        item.completed ? Icon(Icons.clear) : Icon(Icons.check),
+                  _buildChoiceButton(
+                    text: 'Yes',
                     onPressed: () {
-                      // Update the Firestore document to mark as incomplete (false) or complete (true)
-                      FirebaseFirestore.instance
-                          .collection('checklist')
-                          .doc(month)
-                          .collection('questions')
-                          .doc(item.id)
-                          .update({'completed': !item.completed});
+                      _updateChoice(item.id, 'Yes');
                     },
+                    isSelected: selectedChoice == 'Yes',
+                  ),
+                  _buildChoiceButton(
+                    text: 'Maybe',
+                    onPressed: () {
+                      _updateChoice(item.id, 'Maybe');
+                    },
+                    isSelected: selectedChoice == 'Maybe',
+                  ),
+                  _buildChoiceButton(
+                    text: 'No',
+                    onPressed: () {
+                      _updateChoice(item.id, 'No');
+                    },
+                    isSelected: selectedChoice == 'No',
+                  ),
+                  _buildChoiceButton(
+                    text: 'Reset',
+                    onPressed: () {
+                      _updateChoice(item.id, null);
+                    },
+                    isSelected: selectedChoice == null,
                   ),
                 ],
               ),
@@ -171,5 +176,51 @@ class MotherChecklistPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _buildChoiceButton({
+  required String text,
+  required VoidCallback onPressed,
+  required bool isSelected,
+}) {
+  Color buttonColor;
+
+  switch (text) {
+    case 'Yes':
+      buttonColor = isSelected ? Colors.green : Colors.grey;
+      break;
+    case 'Maybe':
+      buttonColor = isSelected ? Colors.orange : Colors.grey;
+      break;
+    case 'No':
+      buttonColor = isSelected ? Colors.red : Colors.grey;
+      break;
+    case 'Reset':
+      buttonColor = isSelected ? Colors.blue : Colors.grey;
+      break;
+    default:
+      buttonColor = Colors.grey;
+  }
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 5),
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: buttonColor,
+      ),
+      onPressed: onPressed,
+      child: Text(text),
+    ),
+  );
+}
+
+  Future<void> _updateChoice(String itemId, String? choice) async {
+    // Update the Firestore document with the selected choice
+    await FirebaseFirestore.instance
+        .collection('checklist')
+        .doc(month)
+        .collection('questions')
+        .doc(itemId)
+        .update({'choice': choice});
   }
 }

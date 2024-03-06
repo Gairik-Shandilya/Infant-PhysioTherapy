@@ -161,7 +161,7 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
       'Speciality': _specialityController.text,
       'Institute': _instituteController.text,
       'EmailAddress': _emailController.text,
-      'Mobile Number': _mobileNoController.text,
+      'MobileNumber': _mobileNoController.text,
     });
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
