@@ -68,6 +68,7 @@ class _FirstScreenState extends State<FirstScreen> {
       ),
       body: Center(
         child: Column(
+          
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Padding(

@@ -15,19 +15,18 @@ class DoctorDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(data['Name']),
         actions: [
-            IconButton(
-              icon: Icon(Icons.textsms_outlined),
-              onPressed: () {
-                // Handle search action
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.call),
-              onPressed: () {
-                // Handle notifications action
-              },
-            )
-          ],
+          IconButton(
+            icon: const Icon(Icons.textsms_outlined),
+            onPressed: () {
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.call),
+            onPressed: () {
+              // Handle notifications action
+            },
+          )
+        ],
         backgroundColor: const Color.fromARGB(255, 16, 89, 149),
       ),
       body: Padding(
@@ -51,7 +50,7 @@ class DoctorDetailPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text(
+            const Text(
                 '-----------------------------------------------------------------------------------------'),
             const SizedBox(
               height: 20,
@@ -69,7 +68,7 @@ class DoctorDetailPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text(
+            const Text(
                 '-----------------------------------------------------------------------------------------'),
             const SizedBox(
               height: 20,
@@ -87,7 +86,7 @@ class DoctorDetailPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text(
+            const Text(
                 '-----------------------------------------------------------------------------------------'),
             const SizedBox(
               height: 20,
@@ -105,7 +104,7 @@ class DoctorDetailPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text(
+            const Text(
                 '-----------------------------------------------------------------------------------------'),
             const SizedBox(
               height: 20,
@@ -123,7 +122,7 @@ class DoctorDetailPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text(
+            const Text(
                 '-----------------------------------------------------------------------------------------'),
             const SizedBox(
               height: 20,
@@ -141,7 +140,8 @@ class DoctorDetailPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text('-----------------------------------------------------------------------------------------'),
+            const Text(
+                '-----------------------------------------------------------------------------------------'),
             const SizedBox(
               height: 20,
             ),
@@ -155,7 +155,6 @@ class DoctorDetailPage extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            
           ],
         ),
       ),

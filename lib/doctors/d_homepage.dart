@@ -12,9 +12,10 @@ class Article {
 }
 
 class DoctorArticleScreen extends StatelessWidget {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController searchbarcontroller = TextEditingController();
+
+  DoctorArticleScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class DoctorArticleScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => WriteArticle()),
                     );
-                }, icon: Icon(Icons.edit))
+                }, icon: const Icon(Icons.edit))
               ],
             ),
             const SizedBox(
@@ -86,7 +87,7 @@ class DoctorArticleScreen extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            ArticleList(),
+            const ArticleList(),
             
             
           ],

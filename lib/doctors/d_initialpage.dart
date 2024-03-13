@@ -3,7 +3,6 @@ import 'package:physiotherapy/doctors/d_checklist.dart';
 import 'package:physiotherapy/doctors/d_homepage.dart';
 import 'package:physiotherapy/doctors/d_motherlist.dart';
 import 'package:physiotherapy/doctors/d_profile.dart';
-import 'package:physiotherapy/models/checklist.dart';
 import 'package:physiotherapy/mothers/m_checklist.dart';
 
 class DoctorInitialPage extends StatefulWidget {
@@ -18,10 +17,10 @@ class _DoctorInitialPageState extends State<DoctorInitialPage> {
 
   List <Widget> tabs =  <Widget> [
     DoctorArticleScreen(),
-    Motherlist(),
-    DoctorChecklist(),
-    MotherChecklist(),
-    DoctorProfile()
+    const Motherlist(),
+    const DoctorChecklist(),
+    const MotherChecklist(),
+    const DoctorProfile()
 
   ];
 

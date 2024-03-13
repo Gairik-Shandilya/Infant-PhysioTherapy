@@ -42,7 +42,7 @@ class _MotherProfileState extends State<MotherProfile> {
   void cropImage(XFile file) async {
     CroppedFile? croppedFile = await ImageCropper().cropImage(
         compressQuality: 20,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        aspectRatio:const CropAspectRatio(ratioX: 1, ratioY: 1),
         sourcePath: file.path);
     if (croppedFile != null) {
       File? croppedImage = File(croppedFile.path);
@@ -81,7 +81,7 @@ class _MotherProfileState extends State<MotherProfile> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Upload Profile Picture"),
+            title:const Text("Upload Profile Picture"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -127,7 +127,7 @@ class _MotherProfileState extends State<MotherProfile> {
                   backgroundImage:
                       (imagefile != null) ? FileImage(imagefile!) : null,
                   child: (imagefile == null)
-                      ? Icon(
+                      ? const Icon(
                           Icons.person,
                           size: 50,
                         )
@@ -145,14 +145,14 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity, 50), // Set the height as needed
+                      const Size(double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => InfantProfilePage()));
+                            builder: (context) => const InfantProfilePage()));
                   },
                   child: Row(
                     children: const [
@@ -178,7 +178,7 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity, 50), // Set the height as needed
+                      const Size(double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {},
@@ -206,7 +206,7 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity, 50), // Set the height as needed
+                      const Size(double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {},
@@ -234,7 +234,7 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity, 50), // Set the height as needed
+                      const Size(double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {},
@@ -291,13 +291,13 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity, 50), // Set the height as needed
+                      const Size(double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {
                     FirebaseAuth.instance.signOut();
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: ((context) => ProfileSelection())));
+                        builder: ((context) => const ProfileSelection())));
                   },
                   child: Row(
                     children: const [

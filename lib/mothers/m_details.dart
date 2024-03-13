@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/components/mytextfield.dart';
-import 'package:physiotherapy/doctors/d_initialpage.dart';
 import 'package:physiotherapy/mothers/m_intitialpage.dart';
 
 class MotherDetailEnquiry extends StatefulWidget {

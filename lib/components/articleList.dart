@@ -69,7 +69,7 @@ class _ArticleListState extends State<ArticleList> {
                                         children: [
                                           const Text('content : '),
                                           Text(
-                                              '${_truncateText(snapshot.data!.docs[index]['content'], 10)}'),
+                                              _truncateText(snapshot.data!.docs[index]['content'], 10)),
                                           const Text('....')
                                         ],
                                       ),
@@ -151,7 +151,7 @@ class ArticleFullView extends StatelessWidget {
             ),
             
             Text(
-              'Published At : ${formattedDateTime}',
+              'Published At : $formattedDateTime',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Color(0xFF4A545E),
@@ -163,7 +163,7 @@ class ArticleFullView extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text('-----------------------------------------------------------------------------------------'),
+            const Text('-----------------------------------------------------------------------------------------'),
             const SizedBox(
               height: 20,
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:physiotherapy/firestore_services.dart/m_services.dart';
 
 class ChecklistItem {
   String id;
@@ -56,36 +57,24 @@ class DoctorChecklistPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(
-            height: 20,
-          ),
-          const Text(
-            'Doctor Checklist',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF4A545E),
-              fontSize: 20,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          
           const SizedBox(
             height: 20,
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _addItemController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Add checklist item...',
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: _addItem,
                 ),
               ],
@@ -111,17 +100,17 @@ class MotherChecklistPage extends StatelessWidget {
           .snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Something went wrong'));
+          return const Center(child: Text('Something went wrong'));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           print(month);
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (!snapshot.hasData && snapshot.data!.docs.isEmpty) {
           print(snapshot.data);
-          return Center(child: Text('No checklist items found'));
+          return const Center(child: Text('No checklist items found'));
         }
 
         return ListView.builder(
@@ -144,6 +133,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Yes',
                     onPressed: () {
+                      copyChecklistToMother('Yes',month);
                       _updateChoice(item.id, 'Yes');
                     },
                     isSelected: selectedChoice == 'Yes',
@@ -151,6 +141,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Maybe',
                     onPressed: () {
+                      copyChecklistToMother('Maybe',month);
                       _updateChoice(item.id, 'Maybe');
                     },
                     isSelected: selectedChoice == 'Maybe',
@@ -158,6 +149,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'No',
                     onPressed: () {
+                      copyChecklistToMother('No',month);
                       _updateChoice(item.id, 'No');
                     },
                     isSelected: selectedChoice == 'No',
@@ -165,6 +157,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Reset',
                     onPressed: () {
+                      copyChecklistToMother('',month);
                       _updateChoice(item.id, null);
                     },
                     isSelected: selectedChoice == null,
@@ -179,44 +172,45 @@ class MotherChecklistPage extends StatelessWidget {
   }
 
   Widget _buildChoiceButton({
-  required String text,
-  required VoidCallback onPressed,
-  required bool isSelected,
-}) {
-  Color buttonColor;
+    required String text,
+    required VoidCallback onPressed,
+    required bool isSelected,
+  }) {
+    Color buttonColor;
 
-  switch (text) {
-    case 'Yes':
-      buttonColor = isSelected ? Colors.green : Colors.grey;
-      break;
-    case 'Maybe':
-      buttonColor = isSelected ? Colors.orange : Colors.grey;
-      break;
-    case 'No':
-      buttonColor = isSelected ? Colors.red : Colors.grey;
-      break;
-    case 'Reset':
-      buttonColor = isSelected ? Colors.blue : Colors.grey;
-      break;
-    default:
-      buttonColor = Colors.grey;
-  }
+    switch (text) {
+      case 'Yes':
+        buttonColor = isSelected ? Colors.green : Colors.grey;
+        break;
+      case 'Maybe':
+        buttonColor = isSelected ? Colors.orange : Colors.grey;
+        break;
+      case 'No':
+        buttonColor = isSelected ? Colors.red : Colors.grey;
+        break;
+      case 'Reset':
+        buttonColor = isSelected ? Colors.blue : Colors.grey;
+        break;
+      default:
+        buttonColor = Colors.grey;
+    }
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 5),
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: buttonColor,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: buttonColor,
+        ),
+        onPressed: onPressed,
+        child: Text(text),
       ),
-      onPressed: onPressed,
-      child: Text(text),
-    ),
-  );
-}
+    );
+  }
 
   Future<void> _updateChoice(String itemId, String? choice) async {
     // Update the Firestore document with the selected choice
     await FirebaseFirestore.instance
+        
         .collection('checklist')
         .doc(month)
         .collection('questions')

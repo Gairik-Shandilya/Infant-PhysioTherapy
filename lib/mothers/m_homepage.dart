@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/components/articleList.dart';
 import 'package:physiotherapy/firestore_services.dart/m_services.dart';
-import 'package:physiotherapy/pages/m_articles.dart';
 
 class MotherHomePage extends StatefulWidget {
   const MotherHomePage({super.key});
@@ -84,7 +83,7 @@ class _MotherHomePageState extends State<MotherHomePage> {
             const SizedBox(
               height: 20,
             ),
-            ArticleList(),
+            const ArticleList(),
             
             
           ],

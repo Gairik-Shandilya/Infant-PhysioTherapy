@@ -37,7 +37,7 @@ class _InfantProfilePageState extends State<InfantProfilePage> {
       'MotherName': _motherNameController.text,
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Infant profile updated successfully'),
     ));
   }
@@ -47,8 +47,8 @@ class _InfantProfilePageState extends State<InfantProfilePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-            title: Text('Infant Profile'),
-            backgroundColor: Color.fromARGB(255, 16, 89, 149)),
+            title: const Text('Infant Profile'),
+            backgroundColor: const Color.fromARGB(255, 16, 89, 149)),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
           child: SingleChildScrollView(
@@ -59,16 +59,16 @@ class _InfantProfilePageState extends State<InfantProfilePage> {
                   .snapshots(),
               builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Center(child: Text('Something went wrong'));
+                  return const Center(child: Text('Something went wrong'));
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (!snapshot.hasData || !snapshot.data!.exists) {
                   print('No infant profile found for uid: $currentuid');
-                  return Center(child: Text('No infant profile found'));
+                  return const Center(child: Text('No infant profile found'));
                 }
 
                 Map<String, dynamic> infantData =
@@ -105,7 +105,7 @@ class _InfantProfilePageState extends State<InfantProfilePage> {
                         _saveInfantProfile();
                         Navigator.pop(context);
                       },
-                      child: Text('Save Profile'),
+                      child: const Text('Save Profile'),
                     ),
                   ],
                 );
@@ -164,7 +164,7 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
       'MobileNumber': _mobileNoController.text,
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Doctor profile updated successfully'),
     ));
   }
@@ -174,8 +174,8 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-            title: Text('Doctor Profile'),
-            backgroundColor: Color.fromARGB(255, 16, 89, 149)),
+            title: const Text('Doctor Profile'),
+            backgroundColor:const Color.fromARGB(255, 16, 89, 149)),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
           child: SingleChildScrollView(
@@ -186,16 +186,16 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
                   .snapshots(),
               builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Center(child: Text('Something went wrong'));
+                  return const Center(child: Text('Something went wrong'));
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (!snapshot.hasData || !snapshot.data!.exists) {
                   print('No infant profile found for uid: $currentuid');
-                  return Center(child: Text('No doctor profile found'));
+                  return const Center(child: Text('No doctor profile found'));
                 }
 
                 Map<String, dynamic> infantData =
@@ -231,7 +231,7 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
                         _saveDoctorProfile();
                         Navigator.pop(context);
                       },
-                      child: Text('Save Profile'),
+                      child: const Text('Save Profile'),
                     ),
                   ],
                 );

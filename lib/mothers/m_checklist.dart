@@ -114,20 +114,20 @@ class NumberedButton extends StatelessWidget {
     return Container(
       clipBehavior: Clip.none,
       width: 55,
-      margin: EdgeInsets.symmetric(horizontal: 2),
+      margin: const EdgeInsets.symmetric(horizontal: 2),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
           backgroundColor: isOrange
               ? MaterialStateProperty.all<Color>(Colors.orange)
               : MaterialStateProperty.all<Color>(
-                  Color.fromRGBO(38, 47, 151, 1),
+                  const Color.fromRGBO(38, 47, 151, 1),
                 ),
-          fixedSize: MaterialStateProperty.all<Size>(Size(40, 40)),
+          fixedSize: MaterialStateProperty.all<Size>(const Size(40, 40)),
         ),
         child: Text(
           '$number',
-          style: TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18),
         ),
       ),
     );

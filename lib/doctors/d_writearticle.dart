@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:physiotherapy/doctors/d_homepage.dart';
 import 'package:physiotherapy/firestore_services.dart/m_services.dart';
 
 class Article {
@@ -12,7 +11,7 @@ class Article {
 }
 
 class WriteArticle extends StatefulWidget {
-  WriteArticle({super.key});
+  const WriteArticle({super.key});
 
   @override
   State<WriteArticle> createState() => _WriteArticleState();
@@ -89,15 +88,15 @@ class _WriteArticleState extends State<WriteArticle> {
               
               TextField(
                 controller: _titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Title'),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextField(
                 controller: _contentController,
                 maxLines: 5,
-                decoration: InputDecoration(labelText: 'Content'),
+                decoration: const InputDecoration(labelText: 'Content'),
               ),
-              SizedBox(height: 150.0),
+              const SizedBox(height: 150.0),
               Center(
                 child: ElevatedButton(
                     onPressed: () {
