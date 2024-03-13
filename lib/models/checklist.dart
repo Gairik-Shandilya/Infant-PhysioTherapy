@@ -57,12 +57,11 @@ class DoctorChecklistPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          
           const SizedBox(
             height: 20,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Row(
               children: [
                 Expanded(
@@ -119,6 +118,7 @@ class MotherChecklistPage extends StatelessWidget {
             DocumentSnapshot questionDoc = snapshot.data!.docs[index];
             // Access the 'text' field from the question document
             String questionText = questionDoc['text'];
+            String doctorId = questionDoc['doctorId'];
             ChecklistItem item =
                 ChecklistItem.fromSnapshot(snapshot.data!.docs[index]);
 
@@ -133,7 +133,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Yes',
                     onPressed: () {
-                      copyChecklistToMother('Yes',month);
+                      copyChecklistToMother('Yes', month,questionText,doctorId);
                       _updateChoice(item.id, 'Yes');
                     },
                     isSelected: selectedChoice == 'Yes',
@@ -141,7 +141,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Maybe',
                     onPressed: () {
-                      copyChecklistToMother('Maybe',month);
+                      copyChecklistToMother('Maybe', month,questionText,doctorId);
                       _updateChoice(item.id, 'Maybe');
                     },
                     isSelected: selectedChoice == 'Maybe',
@@ -149,7 +149,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'No',
                     onPressed: () {
-                      copyChecklistToMother('No',month);
+                      copyChecklistToMother('No', month,questionText,doctorId);
                       _updateChoice(item.id, 'No');
                     },
                     isSelected: selectedChoice == 'No',
@@ -157,7 +157,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Reset',
                     onPressed: () {
-                      copyChecklistToMother('',month);
+                      copyChecklistToMother('', month,questionText,doctorId);
                       _updateChoice(item.id, null);
                     },
                     isSelected: selectedChoice == null,
@@ -210,7 +210,6 @@ class MotherChecklistPage extends StatelessWidget {
   Future<void> _updateChoice(String itemId, String? choice) async {
     // Update the Firestore document with the selected choice
     await FirebaseFirestore.instance
-        
         .collection('checklist')
         .doc(month)
         .collection('questions')

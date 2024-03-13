@@ -52,7 +52,7 @@ Future<String> getDoctorName() async {
 User? user = FirebaseAuth.instance.currentUser;
 String motherId = user!.uid; // Use the user's UID as the mother's ID
 
-void copyChecklistToMother(String choice,String month) async {
+void copyChecklistToMother(String choice,String month,String questionText,String doctorId) async {
   // Reference to the checklist collection
   CollectionReference checklistCollection = FirebaseFirestore.instance
       .collection('checklist')
@@ -72,16 +72,14 @@ void copyChecklistToMother(String choice,String month) async {
     QuerySnapshot checklistSnapshot = await checklistCollection.get();
 
     // Iterate through each question and write it to the mother's nested checklist collection
-    for (QueryDocumentSnapshot questionDoc in checklistSnapshot.docs ) {
-      String questionText = questionDoc['text'];
-      String doctorId = questionDoc['doctorId'];
+    
       // Write the question to the mother's nested checklist collection
       await motherChecklistCollection.add({
         'choice': choice,
         'text': questionText,
         'doctorId': doctorId,
       });
-    }
+    
 
     print('Checklist copied to mother successfully');
   } catch (e) {
