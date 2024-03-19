@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:physiotherapy/doctors/Faq_about.dart';
 import 'package:physiotherapy/firestore_services.dart/m_services.dart';
 import 'package:physiotherapy/mothers/m_editprofile.dart';
 import 'package:physiotherapy/pages/profile_selection.dart';
@@ -192,7 +193,7 @@ class _MotherProfileState extends State<MotherProfile> {
                         width: 10,
                       ),
                       Text(
-                        "Notifications",
+                        "Mother Profile",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -266,7 +267,12 @@ class _MotherProfileState extends State<MotherProfile> {
                           double.infinity, 50), // Set the height as needed
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MotherChecklistFAQ()));
+                  },
                   child: Row(
                     children: const [
                       Icon(
