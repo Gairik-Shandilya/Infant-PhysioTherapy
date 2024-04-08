@@ -1,9 +1,111 @@
-
 import 'package:flutter/material.dart';
+
+class AboutMePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('About Me'),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Welcome to our healthcare app!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Our Mission',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'At [Your App Name], we are dedicated to revolutionizing healthcare by leveraging cutting-edge technology to improve patient outcomes, enhance accessibility to healthcare services, and empower individuals to take control of their well-being.',
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Who We Are',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'We are a passionate team of healthcare professionals, technologists, and innovators committed to making a positive impact on the lives of people around the world. Our diverse backgrounds and expertise converge to create a dynamic environment where creativity, collaboration, and compassion thrive.',
+            ),
+            SizedBox(height: 20),
+            Text(
+              'What We Believe In',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Innovation: We believe in constantly pushing the boundaries of what\'s possible in healthcare through innovation and forward-thinking solutions.',
+            ),
+            Text(
+              'Empowerment: We believe in empowering individuals to make informed decisions about their health and well-being, putting them at the center of their healthcare journey.',
+            ),
+            Text(
+              'Accessibility: We believe that everyone deserves access to quality healthcare services, regardless of their background, location, or socioeconomic status.',
+            ),
+            Text(
+              'Privacy and Security: We prioritize the privacy and security of our users\' data, implementing robust measures to safeguard sensitive information and ensure confidentiality.',
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Our Commitment',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'We are committed to delivering a seamless, user-friendly experience that meets the unique needs and preferences of our diverse community of users. Whether you\'re a patient, healthcare provider, or caregiver, we strive to exceed your expectations and provide the support you need to thrive.',
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Get in Touch',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'We value your feedback and input as we continue to improve and evolve our app. If you have any questions, suggestions, or just want to say hello, please don\'t hesitate to reach out to us. We\'re here for you every step of the way.',
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Thank you for choosing [Your App Name]. Together, let\'s build a healthier, happier world!',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 class DoctorFAQ {
   // Define a list to store FAQ items
-  List<Map<String, String>> _faqList = [
+  final List<Map<String, String>> _faqList = [
     {
       'question': 'How do I add items to the doctor\'s checklist?',
       'answer':
@@ -64,7 +166,7 @@ class _DoctorChecklistFAQState extends State<DoctorChecklistFAQ> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 16, 89, 149),
-        title: Text('FAQs'),
+        title: const Text('FAQs'),
       ),
       body: ListView.builder(
         itemCount: f1._faqList.length,
@@ -86,7 +188,7 @@ class _DoctorChecklistFAQState extends State<DoctorChecklistFAQ> {
 
 class MotherFAQ {
   // Define a list to store FAQ items
-  List<Map<String, String>> _faqList = [
+  final List<Map<String, String>> _faqList = [
     {
       'question': 'How do I add items to the doctor\'s checklist?',
       'answer':
@@ -147,7 +249,7 @@ class _MotherChecklistFAQState extends State<MotherChecklistFAQ> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 16, 89, 149),
-        title: Text('FAQs'),
+        title: const Text('FAQs'),
       ),
       body: ListView.builder(
         itemCount: f1._faqList.length,

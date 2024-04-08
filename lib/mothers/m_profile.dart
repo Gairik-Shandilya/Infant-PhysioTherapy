@@ -7,9 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:physiotherapy/doctors/Faq_about.dart';
-import 'package:physiotherapy/firestore_services.dart/m_services.dart';
-import 'package:physiotherapy/mothers/m_editprofile.dart';
+import 'package:physiotherapy/models/Faq_about.dart';
+import 'package:physiotherapy/models/m_services.dart';
+import 'package:physiotherapy/models/m_editprofile.dart';
 import 'package:physiotherapy/pages/profile_selection.dart';
 
 class MotherProfile extends StatefulWidget {
@@ -43,7 +43,7 @@ class _MotherProfileState extends State<MotherProfile> {
   void cropImage(XFile file) async {
     CroppedFile? croppedFile = await ImageCropper().cropImage(
         compressQuality: 20,
-        aspectRatio:const CropAspectRatio(ratioX: 1, ratioY: 1),
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
         sourcePath: file.path);
     if (croppedFile != null) {
       File? croppedImage = File(croppedFile.path);
@@ -82,7 +82,7 @@ class _MotherProfileState extends State<MotherProfile> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title:const Text("Upload Profile Picture"),
+            title: const Text("Upload Profile Picture"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -146,7 +146,8 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(double.infinity, 50), // Set the height as needed
+                      const Size(
+                          double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {
@@ -179,7 +180,8 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(double.infinity, 50), // Set the height as needed
+                      const Size(
+                          double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {},
@@ -207,38 +209,17 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(double.infinity, 50), // Set the height as needed
+                      const Size(
+                          double.infinity, 50), // Set the height as needed
                     ),
                   ),
-                  onPressed: () {},
-                  child: Row(
-                    children: const [
-                      Icon(
-                        Icons.settings,
-                        color: Color.fromRGBO(38, 47, 151, 1),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Settings",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(38, 47, 151, 1),
-                        ),
-                      ),
-                    ],
-                  )),
-              ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(double.infinity, 50), // Set the height as needed
-                    ),
-                  ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AboutMePage(),
+                        ));
+                  },
                   child: Row(
                     children: const [
                       Icon(
@@ -297,7 +278,8 @@ class _MotherProfileState extends State<MotherProfile> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(double.infinity, 50), // Set the height as needed
+                      const Size(
+                          double.infinity, 50), // Set the height as needed
                     ),
                   ),
                   onPressed: () {
