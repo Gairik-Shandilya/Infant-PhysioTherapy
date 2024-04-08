@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 class AboutMePage extends StatelessWidget {
+  const AboutMePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('About Me'),
+        title: const Text('About Me'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: const [
             Text(
               'Welcome to our healthcare app!',
               style: TextStyle(

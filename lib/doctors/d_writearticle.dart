@@ -28,6 +28,7 @@ class _WriteArticleState extends State<WriteArticle> {
 
   final TextEditingController searchbarcontroller = TextEditingController();
   late String doctorName = '';
+  @override
   void initState() {
     super.initState();
     getDoctorName();

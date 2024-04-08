@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:physiotherapy/components/articleList.dart';
+import 'package:physiotherapy/components/article_list.dart';
 import 'package:physiotherapy/models/m_services.dart';
 
 class MotherHomePage extends StatefulWidget {

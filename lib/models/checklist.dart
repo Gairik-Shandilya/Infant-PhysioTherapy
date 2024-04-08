@@ -199,7 +199,7 @@ class MotherChecklistPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: buttonColor,
+          backgroundColor: buttonColor,
         ),
         onPressed: onPressed,
         child: Text(text),

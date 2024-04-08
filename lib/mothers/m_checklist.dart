@@ -103,7 +103,7 @@ class NumberedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isOrange;
 
-  NumberedButton({
+  const NumberedButton({super.key, 
     required this.number,
     required this.onPressed,
     required this.isOrange,

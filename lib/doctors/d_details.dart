@@ -58,6 +58,7 @@ class _DoctorDetailEnquiryState extends State<DoctorDetailEnquiry> {
       'MobileNumber' : mobilenumber,
     });
   }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
