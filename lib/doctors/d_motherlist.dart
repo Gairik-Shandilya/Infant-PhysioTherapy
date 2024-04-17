@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:physiotherapy/mothers/m_doctordetail.dart';
+import 'package:physiotherapy/common/detail_info.dart';
 
 class Motherlist extends StatefulWidget {
   const Motherlist({super.key});

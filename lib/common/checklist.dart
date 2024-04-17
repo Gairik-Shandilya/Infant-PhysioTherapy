@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:physiotherapy/models/m_services.dart';
+import 'package:physiotherapy/common/copy_cl.dart';
 
 class ChecklistItem {
   String id;
-  String text;
-  String choice;
+  String question;
+  String response;
 
   ChecklistItem({
     required this.id,
-    required this.text,
-    required this.choice,
+    required this.question,
+    required this.response,
   });
 
   factory ChecklistItem.fromSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return ChecklistItem(
       id: snapshot.id,
-      text: data['text'] ?? '',
-      choice: data['choice'] ?? '',
+      question: data['question'] ?? '',
+      response: data['response'] ?? '',
     );
   }
 }
 
 class DoctorChecklistPage extends StatelessWidget {
+  final String category;
   String month = '1';
-  DoctorChecklistPage({super.key, required this.month});
+  DoctorChecklistPage({super.key,required this.category, required this.month});
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -41,11 +42,11 @@ class DoctorChecklistPage extends StatelessWidget {
       await FirebaseFirestore.instance
           .collection('checklist')
           .doc(month)
-          .collection('questions')
+          .collection(category)
           .add({
         'doctorId': userId,
-        'text': _addItemController.text,
-        'choice': '',
+        'question': _addItemController.text,
+        'response': '',
       });
 
       _addItemController.clear();
@@ -87,7 +88,8 @@ class DoctorChecklistPage extends StatelessWidget {
 
 class MotherChecklistPage extends StatelessWidget {
   String month = '1';
-  MotherChecklistPage({super.key, required this.month});
+   final String category;
+  MotherChecklistPage({super.key, required this.month, required this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +97,7 @@ class MotherChecklistPage extends StatelessWidget {
       stream: FirebaseFirestore.instance
           .collection('checklist')
           .doc(month)
-          .collection('questions')
+          .collection(category)
           .snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -117,13 +119,14 @@ class MotherChecklistPage extends StatelessWidget {
           itemBuilder: (context, index) {
             DocumentSnapshot questionDoc = snapshot.data!.docs[index];
             // Access the 'text' field from the question document
-            String questionText = questionDoc['text'];
-            String doctorId = questionDoc['doctorId'];
+            String questionText = questionDoc['question'];
+            String qno = questionDoc.id;
+            String doctorId = 'docid';
             ChecklistItem item =
                 ChecklistItem.fromSnapshot(snapshot.data!.docs[index]);
 
             // Get the selected choice from the Firestore document
-            String? selectedChoice = questionDoc['choice'];
+            String? selectedChoice = questionDoc['response'];
 
             return ListTile(
               title: Text(questionText),
@@ -133,32 +136,32 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Yes',
                     onPressed: () {
-                      copyChecklistToMother('Yes', month,questionText,doctorId);
-                      _updateChoice(item.id, 'Yes');
+                      copyChecklistToMother('Yes', month,questionText,doctorId,category,qno);
+                      _updateChoice(item.id, 'Yes',10);
                     },
                     isSelected: selectedChoice == 'Yes',
                   ),
                   _buildChoiceButton(
                     text: 'Maybe',
                     onPressed: () {
-                      copyChecklistToMother('Maybe', month,questionText,doctorId);
-                      _updateChoice(item.id, 'Maybe');
+                      copyChecklistToMother('Maybe', month,questionText,doctorId,category,qno);
+                      _updateChoice(item.id, 'Maybe',5);
                     },
                     isSelected: selectedChoice == 'Maybe',
                   ),
                   _buildChoiceButton(
                     text: 'No',
                     onPressed: () {
-                      copyChecklistToMother('No', month,questionText,doctorId);
-                      _updateChoice(item.id, 'No');
+                      copyChecklistToMother('No', month,questionText,doctorId,category,qno);
+                      _updateChoice(item.id, 'No',0);
                     },
                     isSelected: selectedChoice == 'No',
                   ),
                   _buildChoiceButton(
                     text: 'Reset',
                     onPressed: () {
-                      copyChecklistToMother('', month,questionText,doctorId);
-                      _updateChoice(item.id, null);
+                      copyChecklistToMother('', month,questionText,doctorId,category,qno);
+                      _updateChoice(item.id, "",0);
                     },
                     isSelected: selectedChoice == null,
                   ),
@@ -207,13 +210,12 @@ class MotherChecklistPage extends StatelessWidget {
     );
   }
 
-  Future<void> _updateChoice(String itemId, String? choice) async {
-    // Update the Firestore document with the selected choice
+   Future<void> _updateChoice(String itemId, String choice,int? score) async {
     await FirebaseFirestore.instance
         .collection('checklist')
         .doc(month)
-        .collection('questions')
+        .collection(category)
         .doc(itemId)
-        .update({'choice': choice});
+        .update({'response': choice, 'score': score});
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/mothers/m_checklist.dart';
 import 'package:physiotherapy/mothers/m_doctorlist.dart';
-import 'package:physiotherapy/mothers/m_history.dart';
+import 'package:physiotherapy/mothers/m_chartpage.dart';
 import 'package:physiotherapy/mothers/m_homepage.dart';
 import 'package:physiotherapy/mothers/m_profile.dart';
 class MotherInitialPage extends StatefulWidget {
@@ -21,7 +21,7 @@ class _MotherInitialPageState extends State<MotherInitialPage> {
     const MotherHomePage(),
     const Doctorlist(),
     const MotherChecklist(),
-    const MotherHistory(),
+    const MotherChartPage(),
     const MotherProfile()
   ];
 

@@ -7,9 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:physiotherapy/models/faq_about.dart';
-import 'package:physiotherapy/models/m_services.dart';
-import 'package:physiotherapy/models/m_editprofile.dart';
+import 'package:physiotherapy/common/faq_about.dart';
+import 'package:physiotherapy/common/copy_cl.dart';
+import 'package:physiotherapy/common/edit_profile.dart';
 import 'package:physiotherapy/pages/profile_selection.dart';
 
 class DoctorProfile extends StatefulWidget {
@@ -175,64 +175,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                       ),
                     ],
                   )),
-              ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(
-                          double.infinity, 50), // Set the height as needed
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Row(
-                    children: const [
-                      Icon(
-                        Icons.notifications,
-                        color: Color.fromRGBO(38, 47, 151, 1),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Notifications",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(38, 47, 151, 1),
-                        ),
-                      ),
-                    ],
-                  )),
-              ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                      const Size(
-                          double.infinity, 50), // Set the height as needed
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Row(
-                    children: const [
-                      Icon(
-                        Icons.settings,
-                        color: Color.fromRGBO(38, 47, 151, 1),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Settings",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(38, 47, 151, 1),
-                        ),
-                      ),
-                    ],
-                  )),
+              
               ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:

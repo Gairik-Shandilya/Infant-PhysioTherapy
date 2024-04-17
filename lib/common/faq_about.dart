@@ -31,7 +31,7 @@ class AboutMePage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'At [Your App Name], we are dedicated to revolutionizing healthcare by leveraging cutting-edge technology to improve patient outcomes, enhance accessibility to healthcare services, and empower individuals to take control of their well-being.',
+              'At Infant Physiotherapy, we are dedicated to revolutionizing healthcare by leveraging cutting-edge technology to improve patient outcomes, enhance accessibility to healthcare services, and empower individuals to take control of their well-being.',
             ),
             SizedBox(height: 20),
             Text(
@@ -92,7 +92,7 @@ class AboutMePage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'Thank you for choosing [Your App Name]. Together, let\'s build a healthier, happier world!',
+              'Thank you for choosing Infant Physiotherapy. Together, let\'s build a healthier, happier world!',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -192,50 +192,50 @@ class MotherFAQ {
   // Define a list to store FAQ items
   final List<Map<String, String>> _faqList = [
     {
-      'question': 'How do I add items to the doctor\'s checklist?',
+      'question': 'How do I view the doctor\'s assessments for my child?',
       'answer':
-          'To add items to the checklist, simply type the checklist item in the provided text field and click the "Add" button.'
+          'You can view the assessments by selecting the appropriate month using the numbered buttons on the main screen.'
     },
     {
-      'question': 'Can I view the checklist items for different months?',
+      'question': 'Is it possible to see progress over different months?',
       'answer':
-          'Yes, you can select the month using numbered buttons and view the checklist items corresponding to that month.'
+          'Yes, you can select different months to see how your child\'s development compares over time.'
     },
     {
-      'question': 'What happens when I mark an item\'s status?',
+      'question': 'What does marking an item as "completed" mean?',
       'answer':
-          'When you mark an item\'s status, it gets updated in real-time on the doctor\'s checklist. Additionally, the corresponding status is copied to the mother\'s checklist for the same month.'
+          'Marking an item as "completed" indicates that your child has achieved the milestone listed in the checklist for that month.'
     },
     {
-      'question': 'Can I edit or delete checklist items after adding them?',
+      'question': 'Can I add notes or comments to the checklist?',
       'answer':
-          'Currently, the app does not support editing or deleting checklist items after they are added. However, you can reset the status of an item by selecting the "Reset" option.'
+          'While the current version of the app does not support adding notes, you can provide feedback to the development team for future updates.'
     },
     {
-      'question': 'How do I ensure the confidentiality of checklist data?',
+      'question': 'How is my child\'s data protected?',
       'answer':
-          'Checklist data is securely stored using Firebase Firestore, ensuring that only authorized users (doctors) can access and modify the checklist items.'
+          'All data within the app is securely stored and managed with strict access controls to ensure that your information remains private and secure.'
     },
     {
-      'question': 'What if I encounter issues while using the app?',
+      'question': 'What should I do if I find an error or have trouble using the app?',
       'answer':
-          'If you encounter any technical issues or have questions about using the app, you can reach out to technical support for assistance.'
+          'Please contact our support team through the app\'s help section. We are here to assist you with any issues you encounter.'
     },
     {
-      'question': 'Can I access the checklist from multiple devices?',
+      'question': 'Can I share my child\'s progress with other family members?',
       'answer':
-          'Yes, you can access the checklist from any device by logging in with your credentials. Your checklist data is synced across devices in real-time.'
+          'Yes, the app provides an option to securely share your child\'s progress with family members or healthcare providers.'
     },
     {
-      'question':
-          'Are there plans to add additional features or functionalities to the app?',
+      'question': 'Will there be new features added to help track my child\'s development?',
       'answer':
-          'Yes, the development team is continuously working on improving the app and adding new features based on user feedback and industry trends.'
+          'We regularly update the app with new features to enhance your experience and provide more comprehensive tracking of your child\'s development.'
     },
   ];
 
   // Method to generate a widget displaying all FAQs
 }
+
 
 class MotherChecklistFAQ extends StatefulWidget {
   const MotherChecklistFAQ({super.key});

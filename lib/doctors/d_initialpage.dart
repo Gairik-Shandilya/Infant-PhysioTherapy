@@ -19,7 +19,6 @@ class _DoctorInitialPageState extends State<DoctorInitialPage> {
     DoctorArticleScreen(),
     const Motherlist(),
     const DoctorChecklist(),
-    const MotherChecklist(),
     const DoctorProfile()
 
   ];
@@ -47,12 +46,9 @@ class _DoctorInitialPageState extends State<DoctorInitialPage> {
                 backgroundColor: Colors.black),
             BottomNavigationBarItem(
                 icon: Icon(Icons.message_rounded),
-                label: 'Consultation',
+                label: 'Checklist',
                 backgroundColor: Colors.black),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.history_edu_sharp),
-                label: 'History',
-                backgroundColor: Colors.black),
+            
             BottomNavigationBarItem(
                 icon: Icon(Icons.account_circle_outlined),
                 label: 'Profile',

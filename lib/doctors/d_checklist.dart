@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:physiotherapy/models/checklist.dart';
+import 'package:physiotherapy/common/checklist.dart';
 
 class DoctorChecklist extends StatefulWidget {
   const DoctorChecklist({super.key});
@@ -89,9 +89,7 @@ class _DoctorChecklistState extends State<DoctorChecklist> {
               ),
             ),
             
-            Expanded(flex: 1, child: DoctorChecklistPage(month: selectedButtonNumber.toString())),
             
-            Expanded(flex: 2, child: MotherChecklistPage(month: selectedButtonNumber.toString())),
             const SizedBox(height: 10,)
           ],
         ),

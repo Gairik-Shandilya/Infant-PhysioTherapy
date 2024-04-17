@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:physiotherapy/common/checklist.dart';  // Assuming you have this model.
+import 'package:physiotherapy/common/checklist.dart'; // Assuming you have this model.
 
-class MotherChecklist extends StatefulWidget {
-  const MotherChecklist({super.key});
+class MotherChartPage extends StatefulWidget {
+  const MotherChartPage({super.key});
 
   @override
-  State<MotherChecklist> createState() => _MotherChecklistState();
+  State<MotherChartPage> createState() => _MotherChartPageState();
 }
 
-class _MotherChecklistState extends State<MotherChecklist> {
+class _MotherChartPageState extends State<MotherChartPage> {
   List<bool> buttonStates = List.generate(12, (index) => false);
   int selectedButtonNumber = 0;
 
@@ -30,7 +30,7 @@ class _MotherChecklistState extends State<MotherChecklist> {
               ),
             ),
             const SizedBox(height: 20),
-             SingleChildScrollView(
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -47,7 +47,7 @@ class _MotherChecklistState extends State<MotherChecklist> {
                               buttonStates[j] = false;
                             }
                           }
-                          selectedButtonNumber = i + 1; 
+                          selectedButtonNumber = i + 1;
                         });
                       },
                       isOrange: buttonStates[i],
@@ -83,37 +83,11 @@ class _MotherChecklistState extends State<MotherChecklist> {
                 ],
               ),
             ),
-            
-            buildCategorySection('Gross Motor', 'Gross'),
-            buildCategorySection('Fine Motor', 'Fine Motor'),
-            buildCategorySection('Communication', 'Communication'),
-            buildCategorySection('Problem Solving', 'Problem Solving'),
-            buildCategorySection('Personal Social', 'Personal Social'),
-            buildCategorySection('Overall', 'Overall'),
+
+            //CHART TO BE ADDED
           ],
         ),
       ),
-    );
-  }
-
-  Widget buildCategorySection(String title, String category) {
-    return Column(
-      children: [
-        const SizedBox(height: 20),
-        Text(
-          title,
-          style: const TextStyle(
-            color: Color(0xFF4A545E),
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 750,  // Define a fixed height for each section.
-          child: MotherChecklistPage(month: selectedButtonNumber.toString(), category: category),
-        ),
-      ],
     );
   }
 }
@@ -138,7 +112,8 @@ class NumberedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(isOrange ? Colors.orange : const Color.fromRGBO(38, 47, 151, 1)),
+          backgroundColor: MaterialStateProperty.all(
+              isOrange ? Colors.orange : const Color.fromRGBO(38, 47, 151, 1)),
           fixedSize: MaterialStateProperty.all(const Size(40, 40)),
         ),
         child: Text(

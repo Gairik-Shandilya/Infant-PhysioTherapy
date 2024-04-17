@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:physiotherapy/components/article_list.dart';
 import 'package:physiotherapy/doctors/d_writearticle.dart';
-import 'package:physiotherapy/models/m_services.dart';
+import 'package:physiotherapy/common/copy_cl.dart';
 
 class Article {
   final String title;

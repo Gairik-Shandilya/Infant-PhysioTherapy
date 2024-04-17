@@ -52,12 +52,12 @@ Future<String> getDoctorName() async {
 User? user = FirebaseAuth.instance.currentUser;
 String motherId = user!.uid; // Use the user's UID as the mother's ID
 
-void copyChecklistToMother(String choice,String month,String questionText,String doctorId) async {
+void copyChecklistToMother(String choice,String month,String questionText,String doctorId, String category, String qno) async {
   // Reference to the checklist collection
   CollectionReference checklistCollection = FirebaseFirestore.instance
       .collection('checklist')
       .doc(month)
-      .collection('questions');
+      .collection(category);
 
   // Reference to the mother's nested checklist collection
   CollectionReference motherChecklistCollection = FirebaseFirestore.instance
@@ -65,24 +65,18 @@ void copyChecklistToMother(String choice,String month,String questionText,String
       .doc(motherId)
       .collection('checklist')
       .doc(month)
-      .collection('questions');
+      .collection(category);
 
   try {
-    // Get the questions from the checklist collection
-    QuerySnapshot checklistSnapshot = await checklistCollection.get();
+    // Write the question and response choice to the mother's nested checklist collection
+    await motherChecklistCollection.doc(qno).set({
+      'response': choice,
+      'question': questionText,
+      'doctorId': doctorId,
+    });
 
-    // Iterate through each question and write it to the mother's nested checklist collection
-    
-      // Write the question to the mother's nested checklist collection
-      await motherChecklistCollection.add({
-        'choice': choice,
-        'text': questionText,
-        'doctorId': doctorId,
-      });
-    
-
-    print('Checklist copied to mother successfully');
+    print('Checklist item copied to mother successfully under category: $category');
   } catch (e) {
-    print('Error copying checklist to mother: $e');
+    print('Error copying checklist item to mother: $e');
   }
 }

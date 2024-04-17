@@ -7,9 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:physiotherapy/models/faq_about.dart';
-import 'package:physiotherapy/models/m_services.dart';
-import 'package:physiotherapy/models/m_editprofile.dart';
+import 'package:physiotherapy/common/faq_about.dart';
+import 'package:physiotherapy/common/copy_cl.dart';
+import 'package:physiotherapy/common/edit_profile.dart';
 import 'package:physiotherapy/pages/profile_selection.dart';
 
 class MotherProfile extends StatefulWidget {

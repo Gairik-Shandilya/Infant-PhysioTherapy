@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:physiotherapy/models/m_services.dart';
+import 'package:physiotherapy/common/copy_cl.dart';
 
 class Article {
   final String title;
