@@ -136,7 +136,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Yes',
                     onPressed: () {
-                      copyChecklistToMother('Yes', month,questionText,doctorId,category,qno);
+                      copyChecklistToMother('Yes', month,questionText,doctorId,category,qno,10);
                       _updateChoice(item.id, 'Yes',10);
                     },
                     isSelected: selectedChoice == 'Yes',
@@ -144,7 +144,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Maybe',
                     onPressed: () {
-                      copyChecklistToMother('Maybe', month,questionText,doctorId,category,qno);
+                      copyChecklistToMother('Maybe', month,questionText,doctorId,category,qno,5);
                       _updateChoice(item.id, 'Maybe',5);
                     },
                     isSelected: selectedChoice == 'Maybe',
@@ -152,7 +152,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'No',
                     onPressed: () {
-                      copyChecklistToMother('No', month,questionText,doctorId,category,qno);
+                      copyChecklistToMother('No', month,questionText,doctorId,category,qno,0);
                       _updateChoice(item.id, 'No',0);
                     },
                     isSelected: selectedChoice == 'No',
@@ -160,7 +160,7 @@ class MotherChecklistPage extends StatelessWidget {
                   _buildChoiceButton(
                     text: 'Reset',
                     onPressed: () {
-                      copyChecklistToMother('', month,questionText,doctorId,category,qno);
+                      copyChecklistToMother('', month,questionText,doctorId,category,qno,0);
                       _updateChoice(item.id, "",0);
                     },
                     isSelected: selectedChoice == null,

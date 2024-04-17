@@ -52,7 +52,7 @@ Future<String> getDoctorName() async {
 User? user = FirebaseAuth.instance.currentUser;
 String motherId = user!.uid; // Use the user's UID as the mother's ID
 
-void copyChecklistToMother(String choice,String month,String questionText,String doctorId, String category, String qno) async {
+void copyChecklistToMother(String choice,String month,String questionText,String doctorId, String category, String qno, int score) async {
   // Reference to the checklist collection
   CollectionReference checklistCollection = FirebaseFirestore.instance
       .collection('checklist')
@@ -73,6 +73,7 @@ void copyChecklistToMother(String choice,String month,String questionText,String
       'response': choice,
       'question': questionText,
       'doctorId': doctorId,
+      'score':score,
     });
 
     print('Checklist item copied to mother successfully under category: $category');
