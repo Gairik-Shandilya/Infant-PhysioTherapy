@@ -17,81 +17,93 @@ class _DoctorChecklistState extends State<DoctorChecklist> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              'Select Month',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFF4A545E),
-                fontSize: 20,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w600,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  for (int i = 0; i < 6; i++)
-                    NumberedButton(
-                      number: i + 1,
-                      onPressed: () {
-                        setState(() {
-                          for (int j = 0; j < buttonStates.length; j++) {
-                            if (j == i) {
-                              buttonStates[j] = !buttonStates[j];
-                            } else {
-                              buttonStates[j] = false;
+              const Text(
+                'Select Month',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF4A545E),
+                  fontSize: 20,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    for (int i = 0; i < 6; i++)
+                      NumberedButton(
+                        number: i + 1,
+                        onPressed: () {
+                          setState(() {
+                            for (int j = 0; j < buttonStates.length; j++) {
+                              if (j == i) {
+                                buttonStates[j] = !buttonStates[j];
+                              } else {
+                                buttonStates[j] = false;
+                              }
                             }
-                          }
-                          selectedButtonNumber = i + 1; 
-                        });
-                      },
-                      isOrange: buttonStates[i],
-                    ),
-                ],
+                            selectedButtonNumber = i + 1; 
+                          });
+                        },
+                        isOrange: buttonStates[i],
+                      ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  for (int i = 6; i < 12; i++)
-                    NumberedButton(
-                      number: i + 1,
-                      onPressed: () {
-                        setState(() {
-                          for (int j = 0; j < buttonStates.length; j++) {
-                            if (j == i) {
-                              buttonStates[j] = !buttonStates[j];
-                            } else {
-                              buttonStates[j] = false;
+              const SizedBox(
+                height: 20,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    for (int i = 6; i < 12; i++)
+                      NumberedButton(
+                        number: i + 1,
+                        onPressed: () {
+                          setState(() {
+                            for (int j = 0; j < buttonStates.length; j++) {
+                              if (j == i) {
+                                buttonStates[j] = !buttonStates[j];
+                              } else {
+                                buttonStates[j] = false;
+                              }
                             }
-                          }
-                          selectedButtonNumber = i + 1;
-                        });
-                      },
-                      isOrange: buttonStates[i],
-                    ),
-                ],
+                            selectedButtonNumber = i + 1;
+                          });
+                        },
+                        isOrange: buttonStates[i],
+                      ),
+                  ],
+                ),
               ),
-            ),
-            
-            
-            const SizedBox(height: 10,)
-          ],
+              
+              
+              const SizedBox(height: 10,),
+              Text('Gross'),
+              SizedBox(height: 100,child: DoctorChecklistPage(category: 'Gross', month: selectedButtonNumber.toString())),
+              Text('Fine Motor'),
+              SizedBox(height: 100,child: DoctorChecklistPage(category: 'Fine Motor', month: selectedButtonNumber.toString())),
+              Text('Communication'),
+              SizedBox(height: 100,child: DoctorChecklistPage(category: 'Communication', month: selectedButtonNumber.toString())),
+              Text('Problem Solving'),
+              SizedBox(height :100, child: DoctorChecklistPage(category: 'Problem Solving', month: selectedButtonNumber.toString())),
+              Text('Personal Social'),
+              SizedBox(height: 100,child: DoctorChecklistPage(category: 'Personal Social', month: selectedButtonNumber.toString())),
+            ],
+          ),
         ),
       ),
     );

@@ -184,7 +184,12 @@ class _MotherProfileState extends State<MotherProfile> {
                           double.infinity, 50), // Set the height as needed
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MotherProfilePage()));
+                  },
                   child: Row(
                     children: const [
                       Icon(

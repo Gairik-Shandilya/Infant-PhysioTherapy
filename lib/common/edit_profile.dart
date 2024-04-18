@@ -12,14 +12,10 @@ class InfantProfilePage extends StatefulWidget {
 class _InfantProfilePageState extends State<InfantProfilePage> {
   User? user = FirebaseAuth.instance.currentUser;
   String currentuid = FirebaseAuth.instance.currentUser!.uid;
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _adhaarNumberController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _fatherNameController = TextEditingController();
-  final TextEditingController _motherNameController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
   final TextEditingController _infantNameController = TextEditingController();
-  final TextEditingController _mobileNoController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
 
   void _saveInfantProfile() async {
@@ -27,14 +23,11 @@ class _InfantProfilePageState extends State<InfantProfilePage> {
         .collection('mothers')
         .doc(currentuid)
         .update({
-      'Address': _addressController.text,
       'Gender': _genderController.text,
-      'AdhaarNumber': _adhaarNumberController.text,
       'DateofBirth': _dobController.text,
-      'EmailAddress': _emailController.text,
-      'FatherName': _fatherNameController.text,
+      'Height': _heightController.text,
       'Name': _infantNameController.text,
-      'MotherName': _motherNameController.text,
+      'Weight': _weightController.text,
     });
 
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -74,14 +67,11 @@ class _InfantProfilePageState extends State<InfantProfilePage> {
                 Map<String, dynamic> infantData =
                     snapshot.data!.data() as Map<String, dynamic>;
 
-                _addressController.text = infantData['Address'] ?? '';
-                _adhaarNumberController.text = infantData['AdhaarNumber'] ?? '';
                 _dobController.text = infantData['DateofBirth'] ?? '';
-                _emailController.text = infantData['EmailAddress'] ?? '';
-                _fatherNameController.text = infantData['FatherName'] ?? '';
-                _motherNameController.text = infantData['MotherName'] ?? '';
                 _infantNameController.text = infantData['InfantName'] ?? '';
-                _mobileNoController.text = infantData['MobileNumber'] ?? '';
+                _heightController.text = infantData['Height'] ?? '';
+                
+                _weightController.text = infantData['Weight'] ?? '';
                 _genderController.text = infantData['Gender'] ?? '';
 
                 return Column(
@@ -89,12 +79,9 @@ class _InfantProfilePageState extends State<InfantProfilePage> {
                   children: [
                     _buildTextField('Name', _infantNameController),
                     _buildTextField('Gender', _genderController),
-                    _buildTextField('Father Name', _fatherNameController),
-                    _buildTextField('Mother Name', _motherNameController),
-                    _buildTextField('Email Address', _emailController),
+                    _buildTextField('Weight', _weightController),
+                    _buildTextField('Height', _heightController),
                     _buildTextField('Date of Birth', _dobController),
-                    _buildTextField('Address', _addressController),
-                    _buildTextField('Adhaar Number', _adhaarNumberController),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -128,6 +115,18 @@ class _InfantProfilePageState extends State<InfantProfilePage> {
       ),
     );
   }
+}
+
+Widget _buildTextField(String label, TextEditingController controller) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+      ),
+    ),
+  );
 }
 
 class DoctorProfilePage extends StatefulWidget {
@@ -175,7 +174,7 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
       child: Scaffold(
         appBar: AppBar(
             title: const Text('Doctor Profile'),
-            backgroundColor:const Color.fromARGB(255, 16, 89, 149)),
+            backgroundColor: const Color.fromARGB(255, 16, 89, 149)),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
           child: SingleChildScrollView(
@@ -250,6 +249,119 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
+        ),
+      ),
+    );
+  }
+}
+
+class MotherProfilePage extends StatefulWidget {
+  const MotherProfilePage({Key? key}) : super(key: key);
+
+  @override
+  _MotherProfilePageState createState() => _MotherProfilePageState();
+}
+
+class _MotherProfilePageState extends State<MotherProfilePage> {
+  User? user = FirebaseAuth.instance.currentUser;
+  String currentuid = FirebaseAuth.instance.currentUser!.uid;
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _adhaarNumberController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _fatherNameController = TextEditingController();
+  final TextEditingController _motherNameController = TextEditingController();
+  final TextEditingController _infantNameController = TextEditingController();
+  final TextEditingController _mobileNoController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+
+  void _saveMotherProfile() async {
+    await FirebaseFirestore.instance
+        .collection('mothers')
+        .doc(currentuid)
+        .update({
+      'Address': _addressController.text,
+      'AdhaarNumber': _adhaarNumberController.text,
+      'EmailAddress': _emailController.text,
+      'FatherName': _fatherNameController.text,
+      'Name': _infantNameController.text,
+      'MotherName': _motherNameController.text,
+      'MobileNumber': _mobileNoController.text,
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Mother profile updated successfully'),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+            title: const Text('Mother Profile'),
+            backgroundColor: const Color.fromARGB(255, 16, 89, 149)),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
+          child: SingleChildScrollView(
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('Mothers')
+                  .doc(currentuid)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(child: Text('Something went wrong'));
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || !snapshot.data!.exists) {
+                  print('No infant profile found for uid: $currentuid');
+                  return const Center(child: Text('No infant profile found'));
+                }
+
+                Map<String, dynamic> infantData =
+                    snapshot.data!.data() as Map<String, dynamic>;
+
+                _addressController.text = infantData['Address'] ?? '';
+                _adhaarNumberController.text = infantData['AdhaarNumber'] ?? '';
+                _emailController.text = infantData['EmailAddress'] ?? '';
+                _fatherNameController.text = infantData['FatherName'] ?? '';
+                _motherNameController.text = infantData['MotherName'] ?? '';
+                _infantNameController.text = infantData['InfantName'] ?? '';
+                _mobileNoController.text = infantData['MobileNumber'] ?? '';
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _buildTextField('Infant Name', _infantNameController),
+                    _buildTextField('Father Name', _fatherNameController),
+                    _buildTextField('Mother Name', _motherNameController),
+                    _buildTextField('Email Address', _emailController),
+                    _buildTextField('Address', _addressController),
+                    
+                    _buildTextField('Mobile Number', _mobileNoController),
+                    _buildTextField('Adhaar Number', _adhaarNumberController),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(300, 50),
+                          backgroundColor:
+                              const Color.fromARGB(255, 16, 89, 149)),
+                      onPressed: () {
+                        _saveMotherProfile();
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Save Profile'),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

@@ -7,7 +7,8 @@ class AboutMePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About Me'),
+        title: const Text('About Us'),
+        backgroundColor: const Color.fromARGB(255, 16, 89, 149)
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),

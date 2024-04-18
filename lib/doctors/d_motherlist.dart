@@ -134,8 +134,8 @@ class _MotherlistState extends State<Motherlist> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => DoctorDetailPage(
-                                            doctorDetails:
+                                          builder: (context) => MotherDetailPage(
+                                            motherDetails:
                                                 snapshot.data!.docs[index],
                                           ),
                                         ),

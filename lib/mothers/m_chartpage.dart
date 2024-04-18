@@ -15,6 +15,17 @@ class DataItem {
   });
 }
 
+final Map<int, List<double>> monthlyCutoffs = {
+  //g c  fm prs pns
+  2: [41.84, 22.77, 30.16, 24.62, 33.71],
+  4: [38.41, 34.60, 29.62, 34.98, 33.16],
+  6: [22.25, 29.65, 25.14, 27.72, 25.34],
+  8: [30.61, 33.06, 40.15, 36.17, 35.84],
+  9: [17.82, 13.97, 31.32, 28.72, 18.91],
+  10: [30.07, 22.87, 37.97, 32.51, 27.25],
+  12: [21.49, 15.64, 34.50, 27.32, 21.73],
+};
+
 class MotherChartPage extends StatefulWidget {
   const MotherChartPage({super.key});
 
@@ -33,37 +44,55 @@ class _MotherChartPageState extends State<MotherChartPage> {
     super.initState();
     Firebase.initializeApp();
   }
-void fetchScores(String month) async {
-  try {
-    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-        .collection('Mothers')
-        .doc(user!.uid)
-        .collection('checklist')
-        .doc(month)
-        .get();
 
-    if (docSnapshot.exists) {
-      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
-      List<DataItem> tempData = [
-        DataItem(x: 1, y1: (data['Gross_total'] as num?)?.toDouble() ?? 0.0, y2: cutoffs[0]),
-        DataItem(x: 2, y1: (data['Communication_total'] as num?)?.toDouble() ?? 0.0, y2: cutoffs[1]),
-        DataItem(x: 3, y1: (data['Fine Motor_total'] as num?)?.toDouble() ?? 0.0, y2: cutoffs[2]),
-        DataItem(x: 4, y1: (data['Problem Solving_total'] as num?)?.toDouble() ?? 0.0, y2: cutoffs[3]),
-        DataItem(x: 5, y1: (data['Personal Social_total'] as num?)?.toDouble() ?? 0.0, y2: cutoffs[4]),
-      ];
-      setState(() {
-        chartData = tempData;
-      });
-    } else {
-      print('Document does not exist for the selected month: $month');
+  void fetchScores(int month) async {
+    try {
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection('Mothers')
+          .doc(user!.uid)
+          .collection('checklist')
+          .doc(month.toString())
+          .get();
+
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        List<double> cutoffs = monthlyCutoffs[month] ??
+            [0, 0, 0, 0, 0]; // Default to zeros if no cutoffs found
+        print(monthlyCutoffs[2]);
+        List<DataItem> tempData = [
+          DataItem(
+              x: 1,
+              y1: (data['Gross_total'] as num?)?.toDouble() ?? 0.0,
+              y2: cutoffs[0]),
+          DataItem(
+              x: 2,
+              y1: (data['Communication_total'] as num?)?.toDouble() ?? 0.0,
+              y2: cutoffs[1]),
+          DataItem(
+              x: 3,
+              y1: (data['Fine Motor_total'] as num?)?.toDouble() ?? 0.0,
+              y2: cutoffs[2]),
+          DataItem(
+              x: 4,
+              y1: (data['Problem Solving_total'] as num?)?.toDouble() ?? 0.0,
+              y2: cutoffs[3]),
+          DataItem(
+              x: 5,
+              y1: (data['Personal Social_total'] as num?)?.toDouble() ?? 0.0,
+              y2: cutoffs[4]),
+        ];
+        setState(() {
+          chartData = tempData;
+        });
+      } else {
+        print('Document does not exist for the selected month: $month');
+      }
+    } catch (e) {
+      print('Error fetching scores: $e');
     }
-  } catch (e) {
-    print('Error fetching scores: $e');
   }
-}
 
   // Cutoffs for each category by month, example values
-  final List<double> cutoffs = [50, 45, 40, 35, 30];
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +131,7 @@ void fetchScores(String month) async {
                           }
                           selectedButtonNumber = i + 1;
                         });
-                        fetchScores(selectedButtonNumber.toString());
+                        fetchScores(selectedButtonNumber);
                       },
                       isOrange: buttonStates[i],
                     ),
@@ -131,7 +160,7 @@ void fetchScores(String month) async {
                           }
                           selectedButtonNumber = i + 1;
                         });
-                        fetchScores(selectedButtonNumber.toString());
+                        fetchScores(selectedButtonNumber);
                       },
                       isOrange: buttonStates[i],
                     ),
@@ -143,12 +172,33 @@ void fetchScores(String month) async {
               BargraphPage(
                 chartData: chartData,
               ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Text("G - Gross Motor Total"),
             Text("C - Communication Total"),
             Text("FM - Fine Motor Total"),
             Text("PRS - Problem Solving Total"),
             Text("PNS - Personal Social Total"),
+            SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.square,color: Colors.red,),
+                    Text(" - Cutoff Score")
+                  ],
+                ),
+                Row(
+              children: [
+                Icon(Icons.square,color: Colors.yellow,),
+                Text(" - Total Score")
+              ],
+            )
+              ],
+            ),
+            
           ],
         ),
       ),
@@ -173,7 +223,7 @@ class BargraphPage extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       child: SizedBox(
-        height: screenHeight * 0.5,
+        height: screenHeight * 0.45,
         width: screenWidth,
         child: BarChart(
           BarChartData(
@@ -182,13 +232,7 @@ class BargraphPage extends StatelessWidget {
                 sideTitles: SideTitles(
                   showTitles: true,
                   getTitlesWidget: (double value, TitleMeta meta) {
-                    List<String> titles = [
-                      'G',
-                      'C',
-                      'FM',
-                      'PRS',
-                      'PNS'
-                    ];
+                    List<String> titles = ['G', 'C', 'FM', 'PRS', 'PNS'];
                     return SideTitleWidget(
                       axisSide: meta.axisSide,
                       child: Text(titles[value.toInt() - 1]),
