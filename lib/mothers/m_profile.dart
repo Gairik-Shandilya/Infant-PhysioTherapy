@@ -20,6 +20,7 @@ class MotherProfile extends StatefulWidget {
 }
 
 class _MotherProfileState extends State<MotherProfile> {
+  String? profileImageURL; 
   late String motherName = '';
   File? imagefile;
   @override
@@ -31,8 +32,23 @@ class _MotherProfileState extends State<MotherProfile> {
         motherName = value;
       });
     });
+    fetchProfileImageURL();
   }
+  void fetchProfileImageURL() async {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Mothers')
+          .doc(uid)
+          .get();
 
+      setState(() {
+        profileImageURL = snapshot['profileImageURL'];
+      });
+    } catch (error) {
+      print('Error fetching profile image URL: $error');
+    }
+  }
   void selectImage(ImageSource source) async {
     XFile? pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
