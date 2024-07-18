@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/auth/register_page.dart';
+import 'package:physiotherapy/chatapp/chatscreen.dart';
+import 'package:physiotherapy/doctors/d_initialpage.dart';
+import 'package:physiotherapy/mothers/m_intitialpage.dart';
 
 void main() {
   runApp(
