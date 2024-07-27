@@ -1,15 +1,11 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io'; // Ensure this import
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:physiotherapy/common/faq_about.dart';
 import 'package:physiotherapy/common/copy_cl.dart';
 import 'package:physiotherapy/common/edit_profile.dart';
+import 'package:physiotherapy/common/faq_about.dart';
+import 'package:physiotherapy/common/profile_image.dart';
 import 'package:physiotherapy/pages/profile_selection.dart';
 
 class DoctorProfile extends StatefulWidget {
@@ -20,8 +16,10 @@ class DoctorProfile extends StatefulWidget {
 }
 
 class _DoctorProfileState extends State<DoctorProfile> {
+  String? profileImageURL;
   late String doctorName = '';
   File? imagefile;
+
   @override
   void initState() {
     super.initState();
@@ -31,81 +29,12 @@ class _DoctorProfileState extends State<DoctorProfile> {
         doctorName = value;
       });
     });
+    loadProfileImageURL();
   }
 
-  void selectImage(ImageSource source) async {
-    XFile? pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      cropImage(pickedFile);
-    }
-  }
-
-  void cropImage(XFile file) async {
-    CroppedFile? croppedFile = await ImageCropper().cropImage(
-        compressQuality: 20,
-        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-        sourcePath: file.path);
-    if (croppedFile != null) {
-      File? croppedImage = File(croppedFile.path);
-      if (croppedImage != null) {
-        setState(() {
-          imagefile = croppedImage as File;
-        });
-        try {
-          String uid = FirebaseAuth.instance.currentUser!.uid;
-          Reference storageReference =
-              FirebaseStorage.instance.ref().child('profile_images/$uid.jpg');
-
-          // Upload the file to Cloud Storage
-          UploadTask uploadTask = storageReference.putFile(croppedImage);
-
-          // Get the download URL when the upload is complete
-          String downloadURL = await (await uploadTask).ref.getDownloadURL();
-
-          // Save the download URL to Firestore
-          await FirebaseFirestore.instance
-              .collection('Doctors') // Replace with your collection name
-              .doc(
-                  uid) // Replace with the document ID (typically the user's UID)
-              .update({'profileImageURL': downloadURL});
-
-          print('Profile image uploaded successfully!');
-        } catch (error) {
-          print('Error uploading profile image: $error');
-        }
-      }
-    }
-  }
-
-  void showPhotoOptions() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Upload Profile Picture"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  onTap: () {
-                    Navigator.pop(context);
-                    selectImage(ImageSource.gallery);
-                  },
-                  leading: const Icon(Icons.browse_gallery),
-                  title: const Text("Select from Gallery"),
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.pop(context);
-                    selectImage(ImageSource.camera);
-                  },
-                  leading: const Icon(Icons.camera_alt),
-                  title: const Text("Take a photo"),
-                )
-              ],
-            ),
-          );
-        });
+  Future<void> loadProfileImageURL() async {
+    profileImageURL = await ImageHandler.loadProfileImageURL(context, 'Doctors');
+    setState(() {});
   }
 
   @override
@@ -121,13 +50,16 @@ class _DoctorProfileState extends State<DoctorProfile> {
             children: [
               CupertinoButton(
                 onPressed: () {
-                  showPhotoOptions();
+                  ImageHandler.showPhotoOptions(context, 'Doctors');
                 },
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage:
-                      (imagefile != null) ? FileImage(imagefile!) : null,
-                  child: (imagefile == null)
+                  backgroundImage: (imagefile != null)
+                      ? FileImage(imagefile!)
+                      : (profileImageURL != null
+                          ? NetworkImage(profileImageURL!)
+                          : null) as ImageProvider?,
+                  child: (imagefile == null && profileImageURL == null)
                       ? const Icon(
                           Icons.person,
                           size: 50,

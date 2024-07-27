@@ -45,6 +45,7 @@ dependencies:
   image_cropper: ^4.0.1
   intl: ^0.18.1
   fl_chart: ^0.62.0
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

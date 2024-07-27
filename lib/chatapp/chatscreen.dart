@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -13,20 +14,58 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _controller = TextEditingController();
-  final CollectionReference _messagesCollection =
-      FirebaseFirestore.instance.collection('chats');
+  final TextEditingController _messageController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      _messagesCollection
+  @override
+  void initState() {
+    super.initState();
+    _updateSeenStatus();
+  }
+
+  void _updateSeenStatus() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      print('Updating seen status for user: ${user.uid}');
+      
+      FirebaseFirestore.instance
+          .collection('chats')
+          .doc(widget.chatId)
+          .collection('messages')
+          .where('senderId', isNotEqualTo: user.uid) // Only update messages sent by the other user
+          .where('seen', isEqualTo: false)
+          .get()
+          .then((snapshot) {
+        print('Found ${snapshot.docs.length} messages to update');
+        
+        for (var doc in snapshot.docs) {
+          doc.reference.update({'seen': true});
+          print('Updated seen for message: ${doc.id}');
+        }
+      }).catchError((error) {
+        print('Error updating seen status: $error');
+      });
+    }
+  }
+
+  void _sendMessage() async {
+    if (_messageController.text.isEmpty) return;
+
+    User? user = _auth.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection('chats')
           .doc(widget.chatId)
           .collection('messages')
           .add({
-        'text': _controller.text,
-        'timestamp': Timestamp.now(),
+        'text': _messageController.text,
+        'senderId': user.uid,
+        'timestamp': FieldValue.serverTimestamp(),
+        'seen': false, // Initialize seen to false
       });
-      _controller.clear();
+
+      print('Message sent with seen set to false');
+      _messageController.clear();
     }
   }
 
@@ -40,62 +79,99 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _messagesCollection
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('chats')
                   .doc(widget.chatId)
                   .collection('messages')
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Center(child: Text('Something went wrong'));
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No messages yet'));
-                }
+                var messages = snapshot.data!.docs;
 
                 return ListView.builder(
                   reverse: true,
-                  itemCount: snapshot.data!.docs.length,
+                  itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    DocumentSnapshot message = snapshot.data!.docs[index];
-                    return ListTile(
-                      title: Text(message['text']),
-                      subtitle: Text(
-                        message['timestamp'].toDate().toString(),
-                      ),
-                    );
+                    var message = messages[index];
+                    var messageData = message.data() as Map<String, dynamic>;
+
+                    if (!messageData.containsKey('senderId')) {
+                      // If senderId does not exist, skip the message
+                      return Container();
+                    }
+
+                    bool isMe = messageData['senderId'] == _auth.currentUser!.uid;
+                    bool seen = messageData['seen'] ?? false;
+
+                    print('Message data: $messageData');
+                    return _buildMessage(messageData['text'], isMe, seen);
                   },
                 );
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      hintText: 'Enter a message',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
-                ),
-              ],
+          _buildMessageComposer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessage(String message, bool isMe, bool seen) {
+    print('Building message: $message, isMe: $isMe, seen: $seen');
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        decoration: BoxDecoration(
+          color: isMe ? Colors.blue : Colors.grey[300],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              message,
+              style: TextStyle(
+                color: isMe ? Colors.white : Colors.black,
+                fontSize: 16,
+              ),
             ),
+            if (isMe && seen) // Show seen indicator for sent messages
+              const Icon(
+                Icons.check,
+                size: 16,
+                color: Colors.white,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessageComposer() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _messageController,
+              decoration: const InputDecoration.collapsed(
+                hintText: 'Send a message...',
+              ),
+              textCapitalization: TextCapitalization.sentences,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: _sendMessage,
+            color: const Color.fromARGB(255, 16, 89, 149),
           ),
         ],
       ),
