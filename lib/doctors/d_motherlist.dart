@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/common/detail_info.dart';
-
 class Motherlist extends StatefulWidget {
   const Motherlist({super.key});
 
@@ -14,6 +13,20 @@ class Motherlist extends StatefulWidget {
 class _MotherlistState extends State<Motherlist> {
   User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController searchbarcontroller = TextEditingController();
+
+  Future<String?> _getProfileImageURL(String docId) async {
+    try {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('Mothers')
+          .doc(docId)
+          .get();
+      return doc['profileImageURL'];
+    } catch (e) {
+      print('Error fetching profile image URL: $e');
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,70 +92,76 @@ class _MotherlistState extends State<Motherlist> {
                     return ListView.builder(
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
+                          var motherData = snapshot.data!.docs[index];
+                          var docId = motherData.id;
+
                           return Padding(
-                            padding: const EdgeInsets.symmetric(vertical:10.0),
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: SingleChildScrollView(
-                                  child: ListTile(
-                                    title:
-                                        Text(snapshot.data!.docs[index]['MotherName']),
-                                    subtitle: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                const Text('InfantName : '),
-                                                Text(snapshot.data!.docs[index]
-                                                    ['InfantName']),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Text('Gender : '),
-                                                Text(snapshot.data!.docs[index]
-                                                    ['Gender']),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Text('DateofBirth : '),
-                                                Text(snapshot.data!.docs[index]
-                                                    ['DateofBirth']),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        const Padding(
-                                          padding:  EdgeInsets.only(bottom:5.0),
-                                          child:  CircleAvatar(
+                                child: ListTile(
+                                  title: Text(motherData['MotherName']),
+                                  subtitle: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Text('InfantName : '),
+                                              Text(motherData['InfantName']),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text('Gender : '),
+                                              Text(motherData['Gender']),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text('DateofBirth : '),
+                                              Text(motherData['DateofBirth']),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      FutureBuilder<String?>(
+                                        future: _getProfileImageURL(docId),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return const CupertinoActivityIndicator();
+                                          }
+                                          if (snapshot.hasError || !snapshot.hasData) {
+                                            return const CircleAvatar(
+                                              radius: 40,
+                                              backgroundImage: AssetImage(
+                                                'assets/patient2.jpg',
+                                              ),
+                                            );
+                                          }
+                                          return CircleAvatar(
                                             radius: 40,
-                                            backgroundImage: AssetImage(
-                                              'assets/patient2.jpg',
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MotherDetailPage(
-                                            motherDetails:
-                                                snapshot.data!.docs[index],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    tileColor: const Color.fromARGB(255, 217, 228, 237),
+                                            backgroundImage: NetworkImage(snapshot.data!),
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MotherDetailPage(
+                                          motherDetails: motherData,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  tileColor:
+                                      const Color.fromARGB(255, 217, 228, 237),
                                 ),
                               ),
                             ),

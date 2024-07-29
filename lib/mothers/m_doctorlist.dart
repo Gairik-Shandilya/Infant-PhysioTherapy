@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/common/detail_info.dart';
+import 'package:physiotherapy/common/profile_image.dart';
 
 class Doctorlist extends StatefulWidget {
   const Doctorlist({super.key});
@@ -14,6 +15,20 @@ class Doctorlist extends StatefulWidget {
 class _DoctorlistState extends State<Doctorlist> {
   User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController searchbarcontroller = TextEditingController();
+
+  Future<String?> _getProfileImageURL(String docId) async {
+    try {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('Doctors')
+          .doc(docId)
+          .get();
+      return doc['profileImageURL'];
+    } catch (e) {
+      print('Error fetching profile image URL: $e');
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,70 +94,77 @@ class _DoctorlistState extends State<Doctorlist> {
                     return ListView.builder(
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
+                          var doctorData = snapshot.data!.docs[index];
+                          var docId = doctorData.id;
+
                           return Padding(
-                            padding: const EdgeInsets.symmetric(vertical:10.0),
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: SingleChildScrollView(
-                                  child: ListTile(
-                                    title:
-                                        Text(snapshot.data!.docs[index]['Name']),
-                                    subtitle: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                const Text('Speciality : '),
-                                                Text(snapshot.data!.docs[index]
-                                                    ['Speciality']),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Text('Experience : '),
-                                                Text(snapshot.data!.docs[index]
-                                                    ['Experience']),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Text('Degree : '),
-                                                Text(snapshot.data!.docs[index]
-                                                    ['Degree']),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        const Padding(
-                                          padding:  EdgeInsets.only(bottom:5.0),
-                                          child:  CircleAvatar(
+                                child: ListTile(
+                                  title: Text(doctorData['Name']),
+                                  subtitle: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Text('Speciality : '),
+                                              Text(doctorData['Speciality']),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text('Experience : '),
+                                              Text(doctorData['Experience']),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text('Degree : '),
+                                              Text(doctorData['Degree']),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      FutureBuilder<String?>(
+                                        future: _getProfileImageURL(docId),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const CupertinoActivityIndicator();
+                                          }
+                                          if (snapshot.hasError || !snapshot.hasData) {
+                                            return const CircleAvatar(
+                                              radius: 40,
+                                              backgroundImage: AssetImage(
+                                                'assets/patient2.jpg',
+                                              ),
+                                            );
+                                          }
+                                          return CircleAvatar(
                                             radius: 40,
-                                            backgroundImage: AssetImage(
-                                              'assets/patient2.jpg',
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => DoctorDetailPage(
-                                            doctorDetails:
-                                                snapshot.data!.docs[index],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    tileColor: const Color.fromARGB(255, 217, 228, 237),
+                                            backgroundImage: NetworkImage(snapshot.data!),
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DoctorDetailPage(
+                                          doctorDetails: doctorData,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  tileColor:
+                                      const Color.fromARGB(255, 217, 228, 237),
                                 ),
                               ),
                             ),
