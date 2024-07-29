@@ -1,6 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
+import 'package:photo_view/photo_view.dart';
+import 'chat_service.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatId;
@@ -16,6 +21,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final ChatService _chatService = ChatService();
 
   @override
   void initState() {
@@ -26,21 +32,16 @@ class _ChatScreenState extends State<ChatScreen> {
   void _updateSeenStatus() async {
     User? user = _auth.currentUser;
     if (user != null) {
-      print('Updating seen status for user: ${user.uid}');
-      
       FirebaseFirestore.instance
           .collection('chats')
           .doc(widget.chatId)
           .collection('messages')
-          .where('senderId', isNotEqualTo: user.uid) // Only update messages sent by the other user
+          .where('senderId', isNotEqualTo: user.uid)
           .where('seen', isEqualTo: false)
           .get()
           .then((snapshot) {
-        print('Found ${snapshot.docs.length} messages to update');
-        
         for (var doc in snapshot.docs) {
           doc.reference.update({'seen': true});
-          print('Updated seen for message: ${doc.id}');
         }
       }).catchError((error) {
         print('Error updating seen status: $error');
@@ -48,8 +49,8 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void _sendMessage() async {
-    if (_messageController.text.isEmpty) return;
+  void _sendMessage({String? mediaUrl, String? mediaType}) async {
+    if (_messageController.text.isEmpty && mediaUrl == null) return;
 
     User? user = _auth.currentUser;
     if (user != null) {
@@ -61,12 +62,57 @@ class _ChatScreenState extends State<ChatScreen> {
         'text': _messageController.text,
         'senderId': user.uid,
         'timestamp': FieldValue.serverTimestamp(),
-        'seen': false, // Initialize seen to false
+        'seen': false,
+        'mediaUrl': mediaUrl,
+        'mediaType': mediaType,
       });
 
-      print('Message sent with seen set to false');
       _messageController.clear();
     }
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      String mediaUrl = await _chatService.uploadMedia(File(image.path), widget.chatId);
+      _sendMessage(mediaUrl: mediaUrl, mediaType: 'image');
+    }
+  }
+
+  Future<void> _pickVideo() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
+
+    if (video != null) {
+      String mediaUrl = await _chatService.uploadMedia(File(video.path), widget.chatId);
+      _sendMessage(mediaUrl: mediaUrl, mediaType: 'video');
+    }
+  }
+
+  void _openFullScreenImage(String imageUrl) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: PhotoView(
+            imageProvider: NetworkImage(imageUrl),
+          ),
+        ),
+      );
+    }));
+  }
+
+  void _openFullScreenVideo(String videoUrl) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
+      return Scaffold(
+        
+        body: Center(
+          child: VideoPlayerScreen(videoUrl: videoUrl),
+        ),
+      );
+    }));
   }
 
   @override
@@ -100,16 +146,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     var message = messages[index];
                     var messageData = message.data() as Map<String, dynamic>;
 
-                    if (!messageData.containsKey('senderId')) {
-                      // If senderId does not exist, skip the message
-                      return Container();
-                    }
-
                     bool isMe = messageData['senderId'] == _auth.currentUser!.uid;
                     bool seen = messageData['seen'] ?? false;
 
-                    print('Message data: $messageData');
-                    return _buildMessage(messageData['text'], isMe, seen);
+                    return _buildMessage(
+                      messageData['text'],
+                      isMe,
+                      seen,
+                      messageData['mediaUrl'],
+                      messageData['mediaType'],
+                    );
                   },
                 );
               },
@@ -121,35 +167,62 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildMessage(String message, bool isMe, bool seen) {
-    print('Building message: $message, isMe: $isMe, seen: $seen');
+  Widget _buildMessage(
+    String message,
+    bool isMe,
+    bool seen,
+    String? mediaUrl,
+    String? mediaType,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        decoration: BoxDecoration(
-          color: isMe ? Colors.blue : Colors.grey[300],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              message,
-              style: TextStyle(
-                color: isMe ? Colors.white : Colors.black,
-                fontSize: 16,
-              ),
+      child: Column(
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          if (mediaUrl != null)
+            mediaType == 'image'
+                ? GestureDetector(
+                    onTap: () => _openFullScreenImage(mediaUrl),
+                    child: Image.network(mediaUrl, width: 150, height: 150, fit: BoxFit.cover),
+                  )
+                : GestureDetector(
+                    onTap: () => _openFullScreenVideo(mediaUrl),
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      color: Colors.black,
+                      child: Center(
+                        child: Icon(Icons.play_arrow, color: Colors.white),
+                      ),
+                    ),
+                  ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            decoration: BoxDecoration(
+              color: isMe ? Colors.blue : Colors.grey[300],
+              borderRadius: BorderRadius.circular(20),
             ),
-            if (isMe && seen) // Show seen indicator for sent messages
-              const Icon(
-                Icons.check,
-                size: 16,
-                color: Colors.white,
-              ),
-          ],
-        ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  message,
+                  style: TextStyle(
+                    color: isMe ? Colors.white : Colors.black,
+                    fontSize: 16,
+                  ),
+                ),
+                if (isMe && seen)
+                  const Icon(
+                    Icons.check,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -159,6 +232,16 @@ class _ChatScreenState extends State<ChatScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: Row(
         children: [
+          IconButton(
+            icon: const Icon(Icons.photo),
+            onPressed: _pickImage,
+            color: const Color.fromARGB(255, 16, 89, 149),
+          ),
+          IconButton(
+            icon: const Icon(Icons.videocam),
+            onPressed: _pickVideo,
+            color: const Color.fromARGB(255, 16, 89, 149),
+          ),
           Expanded(
             child: TextField(
               controller: _messageController,
@@ -170,10 +253,64 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.send),
-            onPressed: _sendMessage,
+            onPressed: () => _sendMessage(),
             color: const Color.fromARGB(255, 16, 89, 149),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class VideoPlayerScreen extends StatefulWidget {
+  final String videoUrl;
+
+  const VideoPlayerScreen({Key? key, required this.videoUrl}) : super(key: key);
+
+  @override
+  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
+}
+
+class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(widget.videoUrl)
+      ..initialize().then((_) {
+        setState(() {});
+        _controller.play();
+      });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: _controller.value.isInitialized
+            ? AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
+            : const CircularProgressIndicator(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _controller.value.isPlaying ? _controller.pause() : _controller.play();
+          });
+        },
+        child: Icon(
+          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        ),
       ),
     );
   }

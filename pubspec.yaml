@@ -46,6 +46,8 @@ dependencies:
   intl: ^0.18.1
   fl_chart: ^0.62.0
   shared_preferences: ^2.2.2
+  video_player: ^2.7.2
+  photo_view: ^0.15.0
 
 dev_dependencies:
   flutter_test:

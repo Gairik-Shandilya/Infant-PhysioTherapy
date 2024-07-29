@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class ChatService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<String> initializeChat(String userId, String targetUserId) async {
     String chatId;
 
-    // Check if a chat already exists
     QuerySnapshot chatQuery = await _firestore
         .collection('chats')
         .where('participants', arrayContains: userId)
@@ -21,7 +22,6 @@ class ChatService {
       }
     }
 
-    // If no chat exists, create a new one
     DocumentReference chatDoc = await _firestore.collection('chats').add({
       'participants': [userId, targetUserId],
       'lastMessage': '',
@@ -30,5 +30,14 @@ class ChatService {
 
     chatId = chatDoc.id;
     return chatId;
+  }
+
+  Future<String> uploadMedia(File file, String chatId) async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = _storage.ref().child('chats/$chatId/$fileName');
+    UploadTask uploadTask = reference.putFile(file);
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl;
   }
 }
