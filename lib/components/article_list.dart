@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 
 class ArticleList extends StatefulWidget {
   const ArticleList({super.key});
@@ -15,6 +15,17 @@ class ArticleList extends StatefulWidget {
 class _ArticleListState extends State<ArticleList> {
   User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController searchbarcontroller = TextEditingController();
+  
+  Future<String?> _getProfileImageUrl(String doctorId) async {
+    try {
+      Reference storageReference = FirebaseStorage.instance.ref().child('profile_images/$doctorId.jpg');
+      return await storageReference.getDownloadURL();
+    } catch (e) {
+      print('Error getting profile image URL: $e');
+      return null;
+    }
+  }
+
   String _truncateText(String text, int maxLength) {
     if (text.length <= maxLength) {
       return text;
@@ -41,67 +52,71 @@ class _ArticleListState extends State<ArticleList> {
             return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SingleChildScrollView(
-                          child: ListTile(
-                            title: Text(snapshot.data!.docs[index]['title']),
-                            subtitle: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                  var article = snapshot.data!.docs[index];
+                  return FutureBuilder<String?>(
+                    future: _getProfileImageUrl(article['doctorId']), // Replace with correct field if different
+                    builder: (context, AsyncSnapshot<String?> imageSnapshot) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SingleChildScrollView(
+                              child: ListTile(
+                                title: Text(article['title']),
+                                subtitle: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          const Text('Doctor : '),
-                                          Text(snapshot.data!.docs[index]
-                                              ['doctorName']),
+                                          Row(
+                                            children: [
+                                              const Text('Doctor : '),
+                                              Text(article['doctorName']),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text('Content : '),
+                                              Text(
+                                                  _truncateText(article['content'], 10)),
+                                              const Text('....')
+                                            ],
+                                          ),
                                         ],
                                       ),
-                                      Row(
-                                        children: [
-                                          const Text('content : '),
-                                          Text(
-                                              _truncateText(snapshot.data!.docs[index]['content'], 10)),
-                                          const Text('....')
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(bottom: 5.0),
-                                  child: CircleAvatar(
-                                    radius: 40,
-                                    backgroundImage: AssetImage(
-                                      'assets/patient2.jpg',
                                     ),
-                                  ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 5.0),
+                                      child: CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage: imageSnapshot.data != null
+                                            ? NetworkImage(imageSnapshot.data!)
+                                            : const AssetImage('assets/patient2.jpg') as ImageProvider,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ArticleFullView(
+                                        articleDetails: article,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                tileColor: const Color.fromARGB(255, 218, 209, 239),
+                              ),
                             ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ArticleFullView(
-                                    articleDetails: snapshot.data!.docs[index],
-                                  ),
-                                ),
-                              );
-                            },
-                            tileColor: const Color.fromARGB(255, 218, 209, 239),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   );
                 });
           }),
@@ -124,7 +139,6 @@ class ArticleFullView extends StatelessWidget {
     String formattedDateTime = timestamp != null
         ? DateFormat('dd-MM-yyyy HH:mm:ss').format(timestamp.toDate())
         : 'N/A'; // You can customize the date and time format
-
 
     return Scaffold(
       appBar: AppBar(
@@ -149,7 +163,6 @@ class ArticleFullView extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            
             Text(
               'Published At : $formattedDateTime',
               textAlign: TextAlign.center,
