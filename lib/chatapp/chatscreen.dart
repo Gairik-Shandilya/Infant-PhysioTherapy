@@ -107,8 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void _openFullScreenVideo(String videoUrl) {
     Navigator.push(context, MaterialPageRoute(builder: (_) {
       return Scaffold(
-        
-        body: Center(
+                body: Center(
           child: VideoPlayerScreen(videoUrl: videoUrl),
         ),
       );
