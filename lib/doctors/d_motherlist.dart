@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:physiotherapy/common/detail_info.dart';
+
 class Motherlist extends StatefulWidget {
   const Motherlist({super.key});
 
@@ -13,6 +14,7 @@ class Motherlist extends StatefulWidget {
 class _MotherlistState extends State<Motherlist> {
   User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController searchbarcontroller = TextEditingController();
+  String searchQuery = '';
 
   Future<String?> _getProfileImageURL(String docId) async {
     try {
@@ -25,6 +27,22 @@ class _MotherlistState extends State<Motherlist> {
       print('Error fetching profile image URL: $e');
       return null;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    searchbarcontroller.addListener(() {
+      setState(() {
+        searchQuery = searchbarcontroller.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    searchbarcontroller.dispose();
+    super.dispose();
   }
 
   @override
@@ -89,10 +107,19 @@ class _MotherlistState extends State<Motherlist> {
                     if (snapshot.data!.docs.isEmpty) {
                       return const Text('No data found');
                     }
+
+                    var filteredDocs = snapshot.data!.docs.where((doc) {
+                      var data = doc.data() as Map<String, dynamic>;
+                      var infantName = data['InfantName'].toString().toLowerCase();
+                      var motherName = data['MotherName'].toString().toLowerCase();
+                      var searchLower = searchQuery.toLowerCase();
+                      return infantName.contains(searchLower) || motherName.contains(searchLower);
+                    }).toList();
+
                     return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
+                        itemCount: filteredDocs.length,
                         itemBuilder: (context, index) {
-                          var motherData = snapshot.data!.docs[index];
+                          var motherData = filteredDocs[index];
                           var docId = motherData.id;
 
                           return Padding(

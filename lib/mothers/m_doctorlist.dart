@@ -15,6 +15,7 @@ class Doctorlist extends StatefulWidget {
 class _DoctorlistState extends State<Doctorlist> {
   User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController searchbarcontroller = TextEditingController();
+  String searchQuery = '';
 
   Future<String?> _getProfileImageURL(String docId) async {
     try {
@@ -27,6 +28,22 @@ class _DoctorlistState extends State<Doctorlist> {
       print('Error fetching profile image URL: $e');
       return null;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    searchbarcontroller.addListener(() {
+      setState(() {
+        searchQuery = searchbarcontroller.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    searchbarcontroller.dispose();
+    super.dispose();
   }
 
   @override
@@ -91,10 +108,19 @@ class _DoctorlistState extends State<Doctorlist> {
                     if (snapshot.data!.docs.isEmpty) {
                       return const Text('No data found');
                     }
+
+                    var filteredDocs = snapshot.data!.docs.where((doc) {
+                      var data = doc.data() as Map<String, dynamic>;
+                      var name = data['Name'].toString().toLowerCase();
+                      var speciality = data['Speciality'].toString().toLowerCase();
+                      var searchLower = searchQuery.toLowerCase();
+                      return name.contains(searchLower) || speciality.contains(searchLower);
+                    }).toList();
+
                     return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
+                        itemCount: filteredDocs.length,
                         itemBuilder: (context, index) {
-                          var doctorData = snapshot.data!.docs[index];
+                          var doctorData = filteredDocs[index];
                           var docId = doctorData.id;
 
                           return Padding(
